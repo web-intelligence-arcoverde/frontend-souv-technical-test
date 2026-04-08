@@ -71,7 +71,7 @@ export const ShoppingListProvider = ({ children }: { children: ReactNode }) => {
   const createProductMutation = useCreateProduct()
 
   const addItem = (item: Partial<ProductItem>) => {
-    //@ts-ignore  
+    //@ts-expect-error: mutation expects full item but Partial is passed
     createProductMutation.mutate(item)
   };
 

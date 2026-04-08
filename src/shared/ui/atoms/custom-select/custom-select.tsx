@@ -1,7 +1,7 @@
 
 
 
-import React, { useState } from "react";
+import React, { useState, useId } from "react";
 import Select, { ActionMeta, ClassNamesConfig, MultiValue, SingleValue } from "react-select";
 import { Label } from "@/components/ui/label";
 import { DropdownIndicator } from "./dropdown-indicator";
@@ -34,6 +34,7 @@ export const CustomSelect = ({
   classeNames
 }: CustomSelectProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const id = useId();
 
   return (
     <div className={`group w-full flex flex-col gap-2 ${className}`}>
@@ -41,6 +42,7 @@ export const CustomSelect = ({
       <div className="h-10">
         <Select
           unstyled
+          instanceId={id}
           options={options}
           defaultValue={defaultValue}
           placeholder={placeholder}

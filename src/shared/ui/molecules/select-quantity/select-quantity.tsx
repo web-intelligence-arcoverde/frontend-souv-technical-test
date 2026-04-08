@@ -1,5 +1,6 @@
 'use client';
 
+import React, { useId } from "react";
 import Select from "react-select";
 import { Label } from "@/components/ui/label";
 import { DropdownIndicator } from "../../atoms/custom-select/dropdown-indicator";
@@ -14,6 +15,8 @@ type SelectQuantityProps = {
 };
 
 export const SelectQuantity = ({ name, control }: SelectQuantityProps) => {
+  const id = useId();
+
   return (
     <Controller
       name={name}
@@ -37,6 +40,7 @@ export const SelectQuantity = ({ name, control }: SelectQuantityProps) => {
               value={value.quantity}
             />
             <Select
+              instanceId={id}
               placeholder="Selecione"
 
               options={optionsQuantity}

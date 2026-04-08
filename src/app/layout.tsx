@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "./providers/auth-provider";
 import { QueryProvider } from "./providers/query-provider";
 import { ShoppingListProvider } from "./providers/shopping-list-provider";
 
@@ -20,13 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.className} antialiased`}
-      >
+      <body className={`${inter.className} antialiased`}>
         <QueryProvider>
-          <ShoppingListProvider>
-            {children}
-          </ShoppingListProvider>
+          <AuthProvider>
+            <ShoppingListProvider>{children}</ShoppingListProvider>
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

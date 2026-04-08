@@ -1,18 +1,18 @@
 import { ProductProps } from "@/types/product";
-import axios from "axios";
+import api from "@/shared/api/axios";
 
-const API_BASE_URL = "http://localhost:3000/product";
+const API_BASE_URL = "/product";
 
 export const ProductService = {
   async getProducts(page: number, limit: number) {
-    const response = await axios.get(
+    const response = await api.get(
       `${API_BASE_URL}?page=${page}&limit=${limit}`
     );
     return response.data;
   },
 
   async createProduct(product: ProductProps) {
-    const response = await axios.post(API_BASE_URL, {
+    const response = await api.post(API_BASE_URL, {
       ...product,
       checked: false,
     });
@@ -20,14 +20,14 @@ export const ProductService = {
   },
 
   async updateProductChecked(id: number, checked: boolean) {
-    const response = await axios.patch(`${API_BASE_URL}/${id}/checked`, {
+    const response = await api.patch(`${API_BASE_URL}/${id}/checked`, {
       checked,
     });
     return response.data;
   },
 
   async deleteProduct(id: number) {
-    const response = await axios.delete(`${API_BASE_URL}/${id}`);
+    const response = await api.delete(`${API_BASE_URL}/${id}`);
     return response.data;
   },
 };
