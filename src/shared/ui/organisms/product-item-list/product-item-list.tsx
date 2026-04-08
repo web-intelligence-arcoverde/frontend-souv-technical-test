@@ -15,28 +15,24 @@ const sortProducts = (products: ItemProps[]): ItemProps[] => {
 };
 
 export const ProductItemList = () => {
-  const { products, isLoading, handleNextPage, handlePreviuesPage } =
-    useShoppingList();
-
-  if (isLoading) {
+  if (false) {
     return <Spinner size="large" className="text-white" />;
   }
 
-  if (products.data.length === 0) {
+  if ([].length === 0) {
     return <EmptyList />;
   }
 
   return (
     <div className="flex flex-col gap-3 mt-[40px] w-full items-center">
-      {sortProducts(products.data).map((item) => (
+      {[].map((item) => (
         <ProductItem key={`${item.id}-${item.name}`} {...item} />
       ))}
       <PaginationProductList
-        currentPage={products.currentPage}
-        handleNextPage={handleNextPage}
-        handlePreviuesPage={handlePreviuesPage}
+        currentPage={1}
+        handleNextPage={() => {}}
+        handlePreviuesPage={() => {}}
       />
     </div>
   );
 };
-

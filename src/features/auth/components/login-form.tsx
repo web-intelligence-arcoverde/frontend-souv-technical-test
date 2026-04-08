@@ -1,91 +1,117 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAuth } from "@/app/providers/auth-provider";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { isAxiosError } from "axios";
+import { loginSchema, LoginFormData } from "../schemas/login-schema";
+import { useLogin } from "../hooks/use-login";
+import { TextField } from "@/shared/ui/molecules/text-field/text-field";
+import { Button } from "@/shared/ui/atoms/Button/Button";
+import { SocialAuthGroup } from "./social-auth-group";
 
 export const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const { mutateAsync: loginMutation, isPending } = useLogin();
+  const [serverError, setServerError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+  });
 
+  const onSubmit = async (data: LoginFormData) => {
+    setServerError("");
     try {
-      await login(email, password);
+      await loginMutation(data);
     } catch (err) {
       if (isAxiosError(err)) {
-        setError(err.response?.data?.message || "Erro ao realizar login");
+        setServerError(err.response?.data?.message || "Erro ao realizar login");
       } else {
-        setError("Ocorreu um erro inesperado");
+        setServerError("Ocorreu um erro inesperado");
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-md p-8 bg-gray-700 rounded-lg shadow-xl border border-gray-600">
-      <h2 className="text-3xl font-bold text-gray-100 mb-6 text-center">Login</h2>
-      
-      {error && (
-        <div className="mb-4 p-3 bg-red-900/50 border border-red-500 text-red-200 text-sm rounded">
-          {error}
-        </div>
-      )}
+    <div className="glass-panel p-8 rounded-xl border border-outline-variant/10 shadow-2xl w-full">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {serverError && (
+          <div className="p-3 bg-error-container/20 border border-error/50 text-error-dim text-xs rounded-lg font-bold">
+            {serverError}
+          </div>
+        )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-gray-300 mb-2 text-sm" htmlFor="email">
-            E-mail
-          </label>
-          <input
-            id="email"
-            type="email"
-            className="w-full p-3 bg-gray-800 border border-gray-600 rounded text-gray-100 focus:border-purple-500 focus:outline-none transition-colors"
-            placeholder="seu@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+        {/* Email Field */}
+        <TextField
+          {...register("email")}
+          id="email"
+          label="Email ou Usuário"
+          icon="mail"
+          type="email"
+          placeholder="curator@culinary.com"
+          error={errors.email?.message}
+        />
 
-        <div>
-          <label className="block text-gray-300 mb-2 text-sm" htmlFor="password">
-            Senha
-          </label>
-          <input
-            id="password"
-            type="password"
-            className="w-full p-3 bg-gray-800 border border-gray-600 rounded text-gray-100 focus:border-purple-500 focus:outline-none transition-colors"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
+        {/* Password Field */}
+        <TextField
+          {...register("password")}
+          id="password"
+          label="Senha"
+          icon="lock"
+          type={showPassword ? "text" : "password"}
+          placeholder="••••••••"
+          error={errors.password?.message}
+          rightElement={
+            <button
+              type="button"
+              className="flex items-center justify-center h-full"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              <span className="material-symbols-outlined text-xl">
+                {showPassword ? "visibility_off" : "visibility"}
+              </span>
+            </button>
+          }
+        />
 
-        <button
+        {/* Sign In Button */}
+        <Button
+          variant="premium-gradient"
+          size="full"
           type="submit"
-          disabled={isLoading}
-          className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+          isLoading={isPending}
         >
-          {isLoading ? "Carregando..." : "Entrar"}
-        </button>
+          {isPending ? "Acessando..." : "Entrar"}
+        </Button>
       </form>
 
-      <div className="mt-6 text-center text-gray-400 text-sm">
-        Não tem uma conta?{" "}
-        <Link href="/register" className="text-purple-400 hover:text-purple-300 font-semibold underline">
-          Cadastre-se
-        </Link>
+      {/* Divider */}
+      <div className="flex items-center my-8">
+        <div className="flex-grow h-[1px] bg-outline-variant/20"></div>
+        <span className="px-4 text-[10px] font-bold text-outline uppercase tracking-widest text-center whitespace-nowrap">
+          ou continue com
+        </span>
+        <div className="flex-grow h-[1px] bg-outline-variant/20"></div>
       </div>
+
+      {/* Social Logins */}
+      <SocialAuthGroup />
+
+      <div className="mt-8 text-center" />
+      <p className="text-sm text-on-surface-variant text-center">
+        Não tem uma conta?
+        <Link
+          href="/register"
+          className="text-primary font-bold hover:underline underline-offset-4 ml-1"
+        >
+          Criar conta
+        </Link>
+      </p>
     </div>
   );
 };
