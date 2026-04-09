@@ -9,55 +9,50 @@ import {
 export const CategoryTag = ({ category = "fruit" }: { category: string }) => {
   const styleByCategory = {
     padaria: {
-      backgroundColor: "bg-yellow-dark",
-      Icon: SandwichIcon,
-      iconColor: "text-yellow",
-      text: "padaria",
-      textColor: "text-yellow",
+      bg: "bg-secondary/10",
+      icon: SandwichIcon,
+      color: "text-secondary",
+      label: "Padaria",
     },
     legume: {
-      backgroundColor: "bg-green-dark",
-      Icon: CarrotIcon,
-      iconColor: "text-green",
-      text: "legume",
-      textColor: "text-green",
+      bg: "bg-tertiary/10",
+      icon: CarrotIcon,
+      color: "text-tertiary",
+      label: "Legumes",
     },
     fruta: {
-      backgroundColor: "bg-orange-dark",
-      Icon: AppleIcon,
-      iconColor: "text-orange",
-      text: "fruta",
-      textColor: "text-orange",
+      bg: "bg-primary/10",
+      icon: AppleIcon,
+      color: "text-primary",
+      label: "Frutas",
     },
     bebida: {
-      backgroundColor: "bg-blue-dark",
-      Icon: MilkIcon,
-      iconColor: "text-blue",
-      text: "bebida",
-      textColor: "text-blue",
+      bg: "bg-blue-500/10",
+      icon: MilkIcon,
+      color: "text-blue-400",
+      label: "Bebidas",
     },
     carne: {
-      backgroundColor: "bg-pink-dark",
-      Icon: BeefIcon,
-      iconColor: "text-pink",
-      text: "carne",
-      textColor: "text-pink",
+      bg: "bg-error/10",
+      icon: BeefIcon,
+      color: "text-error",
+      label: "Proteínas",
     },
   };
 
-  const { backgroundColor, Icon, iconColor, text, textColor } =
-    styleByCategory[category as keyof typeof styleByCategory];
+  const config = styleByCategory[category as keyof typeof styleByCategory] || styleByCategory.fruta;
+  const { bg, icon: Icon, color, label } = config;
 
   return (
     <div
-      className={`${backgroundColor} flex flex-row items-center md:px-4 md:py-2 p-2  rounded-full gap-2`}
+      className={`${bg} flex flex-row items-center px-4 py-1.5 rounded-xl gap-2.5 border border-white/5`}
     >
-      <Icon className={`${iconColor}`} size={14} />
-      <h4
-        className={`${textColor} hidden md:block font-family-inter font-semibold text-xs`}
+      <Icon className={color} size={14} />
+      <span
+        className={`${color} hidden md:block text-[10px] font-black uppercase tracking-[0.1em]`}
       >
-        {text}
-      </h4>
+        {label}
+      </span>
     </div>
   );
 };

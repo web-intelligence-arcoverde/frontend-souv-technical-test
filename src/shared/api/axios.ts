@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001",
 });
 
 // Request interceptor for API calls
@@ -46,7 +46,7 @@ api.interceptors.response.use(
           // Update header and retry
           api.defaults.headers.common.Authorization = `Bearer ${idToken}`;
           originalRequest.headers.Authorization = `Bearer ${idToken}`;
-          
+
           return api(originalRequest);
         } catch (refreshError) {
           // Refresh failed, logout user

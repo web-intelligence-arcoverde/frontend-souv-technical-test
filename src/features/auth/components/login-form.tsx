@@ -50,7 +50,7 @@ export const LoginForm = () => {
         <TextField
           {...register("email")}
           id="email"
-          label="Email ou Usuário"
+          label="Email:"
           icon="mail"
           type="email"
           placeholder="curator@culinary.com"
@@ -61,7 +61,7 @@ export const LoginForm = () => {
         <TextField
           {...register("password")}
           id="password"
-          label="Senha"
+          label="Senha:"
           icon="lock"
           type={showPassword ? "text" : "password"}
           placeholder="••••••••"

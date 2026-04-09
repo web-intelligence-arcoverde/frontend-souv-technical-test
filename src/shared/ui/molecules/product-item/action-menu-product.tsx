@@ -1,10 +1,7 @@
-"use client";
-
 import { useShoppingList } from "@/app/providers/shopping-list-provider";
-import { EllipsisVerticalIcon, Trash2 } from "lucide-react";
+import { MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
-
-
+import { cn } from "@/lib/utils";
 
 interface ActionMenuProductProps {
   id: number;
@@ -12,48 +9,46 @@ interface ActionMenuProductProps {
 
 export const ActionMenuProduct = ({ id }: ActionMenuProductProps) => {
   const { deleteItem } = useShoppingList();
-  const [isVisibleActionOptions, setIsVisibleActionOptions] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   return (
-    <button
-      type="button"
-      title="Menu"
-      aria-label="Menu"
-      className="relative"
-      onClick={() => {
-        setIsVisibleActionOptions((prevState) => !prevState);
-      }}
-    >
-      <EllipsisVerticalIcon className="text-purple-light cursor-pointer active:scale-95" />
+    <div className="relative">
+      <button
+        type="button"
+        title="Menu"
+        className={cn(
+          "w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 hover:bg-white/5 border border-transparent hover:border-white/10 active:scale-95",
+          isVisible && "bg-white/10 border-white/10"
+        )}
+        onClick={() => setIsVisible(!isVisible)}
+      >
+        <MoreVertical size={18} className="text-on-surface-variant group-hover:text-primary transition-colors" />
+      </button>
 
-      {isVisibleActionOptions && (
-        <div
-          role="menu"
-          tabIndex={0}
-          className="z-3 flex flex-col gap-1 absolute text-gray-100 bg-gray-500 border border-gray-400 rounded-md overflow-hidden right-0 top-[110%] shadow-sm shadow-gray-400"
-          onClick={(e) => e.stopPropagation()}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") {
-              setIsVisibleActionOptions(false);
-            }
-          }}
-        >
-          <button
-            className="flex items-center gap-2 text-sm p-3 cursor-pointer border border-gray-400 animate-[appear_.3s_backwards]
-                data-[istouchsupported=false]:hover:bg-gray-300 
-                data-[istouchsupported=false]:hover:border-gray-300
-                "
-            onClick={() => {
-              deleteItem(id);
-            }}
+      {isVisible && (
+        <>
+          <div 
+            className="fixed inset-0 z-40" 
+            onClick={() => setIsVisible(false)} 
+          />
+          <div
+            role="menu"
+            className="z-50 absolute right-0 top-full mt-2 w-48 bg-surface-container-highest/90 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl py-2 overflow-hidden animate-in fade-in zoom-in-95 duration-200"
           >
-            <Trash2 size={16} />
-            Excluir
-          </button>
-
-        </div>
+            <button
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-error hover:bg-error/10 transition-colors text-left"
+              onClick={() => {
+                deleteItem(id);
+                setIsVisible(false);
+              }}
+            >
+              <Trash2 size={16} />
+              Excluir Item
+            </button>
+          </div>
+        </>
       )}
-    </button>
+    </div>
   );
 };
 
