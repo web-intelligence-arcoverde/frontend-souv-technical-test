@@ -1,108 +1,141 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAuth } from "@/app/providers/auth-provider";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { isAxiosError } from "axios";
+import { registerSchema, RegisterFormData } from "../schemas/register-schema";
+import { useRegister } from "../hooks/use-register";
+import { TextField } from "@/shared/ui/molecules/text-field/text-field";
+import { Button } from "@/shared/ui/atoms/Button/Button";
+import { SocialAuthGroup } from "./social-auth-group";
 
 export const RegisterForm = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { register } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const { mutateAsync: registerMutation, isPending } = useRegister();
+  const [serverError, setServerError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+  });
 
+  const onSubmit = async (data: RegisterFormData) => {
+    setServerError("");
     try {
-      await register(name, email, password);
+      await registerMutation(data);
     } catch (err) {
       if (isAxiosError(err)) {
-        setError(err.response?.data?.message || "Erro ao criar conta");
+        setServerError(err.response?.data?.message || "Erro ao criar conta");
       } else {
-        setError("Ocorreu um erro inesperado");
+        setServerError("Ocorreu um erro inesperado");
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full max-w-md p-8 bg-gray-700 rounded-lg shadow-xl border border-gray-600">
-      <h2 className="text-3xl font-bold text-gray-100 mb-6 text-center">Cadastro</h2>
-      
-      {error && (
-        <div className="mb-4 p-3 bg-red-900/50 border border-red-500 text-red-200 text-sm rounded">
-          {error}
-        </div>
-      )}
+    <div className="w-full max-w-md">
+      <header className="mb-10 text-center lg:text-left">
+        <h2 className="text-3xl font-extrabold text-white mb-2 tracking-tight">
+          Create Account
+        </h2>
+        <p className="text-on-surface-variant">
+          Elevate your kitchen management experience.
+        </p>
+      </header>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-gray-300 mb-2 text-sm" htmlFor="name">
-            Nome Completo
-          </label>
-          <input
-            id="name"
-            type="text"
-            className="w-full p-3 bg-gray-800 border border-gray-600 rounded text-gray-100 focus:border-purple-500 focus:outline-none transition-colors"
-            placeholder="Seu nome"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {serverError && (
+          <div className="p-3 bg-error-container/20 border border-error/50 text-error-dim text-xs rounded-lg font-bold">
+            {serverError}
+          </div>
+        )}
 
-        <div>
-          <label className="block text-gray-300 mb-2 text-sm" htmlFor="email">
-            E-mail
-          </label>
-          <input
-            id="email"
-            type="email"
-            className="w-full p-3 bg-gray-800 border border-gray-600 rounded text-gray-100 focus:border-purple-500 focus:outline-none transition-colors"
-            placeholder="seu@email.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </div>
+        <TextField
+          {...register("name")}
+          id="name"
+          label="Nome"
+          icon="person"
+          placeholder="Lucas Henrique"
+          error={errors.name?.message}
+        />
 
-        <div>
-          <label className="block text-gray-300 mb-2 text-sm" htmlFor="password">
-            Senha
-          </label>
-          <input
+        <TextField
+          {...register("email")}
+          id="email"
+          label="Email Address"
+          icon="mail"
+          type="email"
+          placeholder="lucas@webintelligence.com.br"
+          error={errors.email?.message}
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <TextField
+            {...register("password")}
             id="password"
-            type="password"
-            className="w-full p-3 bg-gray-800 border border-gray-600 rounded text-gray-100 focus:border-purple-500 focus:outline-none transition-colors"
-            placeholder="No mínimo 6 caracteres"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            minLength={6}
-            required
+            label="Senha"
+            icon="lock"
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••"
+            error={errors.password?.message}
+            rightElement={
+              <button
+                type="button"
+                className="flex items-center justify-center h-full"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                <span className="material-symbols-outlined text-xl">
+                  {showPassword ? "visibility_off" : "visibility"}
+                </span>
+              </button>
+            }
+          />
+          <TextField
+            {...register("confirmPassword")}
+            id="confirmPassword"
+            label="Confirmar senha"
+            icon="verified_user"
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••"
+            error={errors.confirmPassword?.message}
           />
         </div>
 
-        <button
+        <Button
+          variant="premium-gradient"
+          size="full"
           type="submit"
-          disabled={isLoading}
-          className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
+          isLoading={isPending}
         >
-          {isLoading ? "Criando conta..." : "Criar Conta"}
-        </button>
+          {isPending ? "Criando conta..." : "Criar conta"}
+        </Button>
       </form>
 
-      <div className="mt-6 text-center text-gray-400 text-sm">
-        Já possui uma conta?{" "}
-        <Link href="/login" className="text-purple-400 hover:text-purple-300 font-semibold underline">
-          Faça Login
-        </Link>
+      <div className="mt-12 text-center">
+        <p className="text-on-surface-variant text-sm">
+          Já tem uma conta?
+          <Link
+            href="/login"
+            className="text-primary font-bold ml-1 hover:text-white transition-colors"
+          >
+            Entrar
+          </Link>
+        </p>
       </div>
+
+      <footer className="mt-16 flex flex-col items-center gap-4">
+        <div className="flex gap-4">
+          <SocialAuthGroup />
+        </div>
+        <span className="text-[10px] uppercase tracking-widest text-outline">
+          © {new Date().getFullYear()} Web Intelligence - Arcoverde
+        </span>
+      </footer>
     </div>
   );
 };
