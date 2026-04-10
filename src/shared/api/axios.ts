@@ -1,65 +1,27 @@
 import axios from "axios";
 
+/**
+ * Instância do Axios configurada para o BFF (Backend For Frontend).
+ * Como estamos usando Cookies HttpOnly, o navegador gerencia automaticamente
+ * o envio dos tokens para as rotas /api/*. Não é necessário injetar tokens manualmente.
+ */
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001",
+	baseURL: "/api",
 });
 
-// Request interceptor for API calls
-api.interceptors.request.use(
-  async (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Response interceptor for API calls
 api.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
+	(response) => response,
+	async (error) => {
+		if (error.response?.status === 401) {
+			localStorage.removeItem("user");
 
-    // Check if error is 401 and not a retry already
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const refreshToken = localStorage.getItem("refreshToken");
+			if (typeof window !== "undefined" && !window.location.pathname.includes("/login") && !window.location.pathname.includes("/shared")) {
+				window.location.href = "/login";
+			}
+		}
 
-      if (refreshToken) {
-        try {
-          // Attempt to refresh token
-          const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/auth/refresh`,
-            { refreshToken }
-          );
-
-          const { idToken, refreshToken: newRefreshToken } = response.data;
-
-          // Save new tokens
-          localStorage.setItem("token", idToken);
-          localStorage.setItem("refreshToken", newRefreshToken);
-
-          // Update header and retry
-          api.defaults.headers.common.Authorization = `Bearer ${idToken}`;
-          originalRequest.headers.Authorization = `Bearer ${idToken}`;
-
-          return api(originalRequest);
-        } catch (refreshError) {
-          // Refresh failed, logout user
-          localStorage.removeItem("token");
-          localStorage.removeItem("refreshToken");
-          window.location.href = "/login";
-          return Promise.reject(refreshError);
-        }
-      }
-    }
-
-    return Promise.reject(error);
-  }
+		return Promise.reject(error);
+	},
 );
 
 export default api;

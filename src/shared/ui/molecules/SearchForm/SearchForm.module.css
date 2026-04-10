@@ -1,20 +1,20 @@
 .searchForm {
-  display: flex;
-  gap: 0.5rem;
-  width: 100%;
-  max-width: 600px;
+	display: flex;
+	gap: 0.5rem;
+	width: 100%;
+	max-width: 600px;
 }
 
 .input {
-  flex: 1;
-  padding: 0.5rem 1rem;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  font-size: 1rem;
-  transition: border-color 0.2s ease;
+	flex: 1;
+	padding: 0.5rem 1rem;
+	border: 1px solid #ced4da;
+	border-radius: 4px;
+	font-size: 1rem;
+	transition: border-color 0.2s ease;
 }
 
 .input:focus {
-  outline: none;
-  border-color: #007bff;
-} 
+	outline: none;
+	border-color: #007bff;
+}

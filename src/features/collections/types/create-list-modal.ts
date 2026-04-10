@@ -1,4 +1,4 @@
 export interface CreateListModalProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
+	isOpen: boolean;
+	onOpenChange: (open: boolean) => void;
 }
