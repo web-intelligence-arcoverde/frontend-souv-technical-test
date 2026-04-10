@@ -3,7 +3,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/app/providers/auth-provider";
+import { useAuth } from "@/hooks/use-auth";
 
 export const TopNav = () => {
   const { logout } = useAuth();

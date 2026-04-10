@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useAuth } from "@/app/providers/auth-provider";
+import { useAuth } from "@/hooks/use-auth";
 import { LoginFormData } from "../schemas/login-schema";
 import { isAxiosError } from "axios";
 

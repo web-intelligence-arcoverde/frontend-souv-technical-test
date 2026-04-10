@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { InputWithLabel } from "@/shared/ui/molecules/Input/Input";
 import { TextareaWithLabel } from "@/shared/ui/molecules/Textarea/Textarea";
 import { ThemeSelector } from "@/shared/ui/molecules/theme-selector/theme-selector";
-import { SHOPPING_LIST_TYPES } from "@/constants/shopping-list-types";
+import { SHOPPING_LIST_TYPES } from "@/shared/constants/shopping-list-types";
 import {
   createListSchema,
   CreateListFormValues,

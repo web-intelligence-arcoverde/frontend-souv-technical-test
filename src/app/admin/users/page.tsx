@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import api from "@/shared/api/axios";
 import { Header } from "@/shared/ui/organisms/header/header";
-import { useAuth } from "@/app/providers/auth-provider";
+import { useAuth } from "@/hooks/use-auth";
 import { useRouter } from "next/navigation";
 import { isAxiosError } from "axios";
 
@@ -33,7 +33,10 @@ export default function AdminUsersPage() {
         setUsers(response.data);
       } catch (err) {
         if (isAxiosError(err)) {
-          setError(err.response?.data?.message || "Erro ao carregar usuários. Verifique se você tem permissão.");
+          setError(
+            err.response?.data?.message ||
+              "Erro ao carregar usuários. Verifique se você tem permissão.",
+          );
         } else {
           setError("Ocorreu um erro inesperado ao carregar usuários.");
         }
@@ -48,13 +51,17 @@ export default function AdminUsersPage() {
   }, [isAuthenticated]);
 
   if (authLoading || (!isAuthenticated && !isLoading)) {
-    return <div className="min-h-screen bg-gray-600 flex items-center justify-center text-gray-200">Carregando...</div>;
+    return (
+      <div className="min-h-screen bg-gray-600 flex items-center justify-center text-gray-200">
+        Carregando...
+      </div>
+    );
   }
 
   return (
     <div className="bg-gray-600 min-h-screen flex flex-col items-center p-6">
       <Header />
-      
+
       <div className="w-full max-w-[720px] mt-8">
         <h2 className="text-xl font-bold text-gray-100 mb-6 flex items-center gap-2">
           <span className="w-2 h-6 bg-purple-500 rounded-full"></span>
@@ -66,16 +73,20 @@ export default function AdminUsersPage() {
             {error}
           </div>
         ) : isLoading ? (
-          <div className="text-gray-400 text-center py-10">Buscando usuários...</div>
+          <div className="text-gray-400 text-center py-10">
+            Buscando usuários...
+          </div>
         ) : (
           <div className="grid gap-4">
             {users.map((user) => (
-              <div 
+              <div
                 key={user.uid}
                 className="bg-gray-700 p-5 rounded-lg border border-gray-600 flex justify-between items-center hover:border-purple-500/50 transition-colors shadow-lg"
               >
                 <div>
-                  <h3 className="text-gray-100 font-semibold text-lg">{user.name}</h3>
+                  <h3 className="text-gray-100 font-semibold text-lg">
+                    {user.name}
+                  </h3>
                   <p className="text-gray-400 text-sm">{user.email}</p>
                 </div>
                 <div className="text-xs font-mono text-gray-500 bg-gray-800 px-2 py-1 rounded">

@@ -5,7 +5,7 @@ import Select from "react-select";
 import { Label } from "@/components/ui/label";
 import { DropdownIndicator } from "../../atoms/custom-select/dropdown-indicator";
 import { onlyNumbers } from "@/shared/utils/only-numbers";
-import { optionsQuantity } from "@/shared/mock/option-quantity";
+import { optionsQuantity } from "@/shared/constants/option-quantity";
 import { Controller } from "react-hook-form";
 import { cn } from "@/lib/utils";
 
@@ -16,11 +16,14 @@ type SelectQuantityProps = {
   error?: string;
 };
 
-export const SelectQuantity = ({ name, control, error }: SelectQuantityProps) => {
+export const SelectQuantity = ({
+  name,
+  control,
+  error,
+}: SelectQuantityProps) => {
   const id = useId();
   const [isMounted, setIsMounted] = useState(false);
 
-  // Solução para Hydration Mismatch em componentes SSR que usam react-select
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -32,10 +35,12 @@ export const SelectQuantity = ({ name, control, error }: SelectQuantityProps) =>
       render={({ field: { onChange, value } }) => (
         <div className="group w-fit flex flex-col gap-2 relative z-50">
           <div className="flex justify-between w-full items-center px-1">
-            <Label className={cn(
-              "text-[10px] font-black uppercase tracking-[0.2em] transition-colors group-focus-within:text-primary",
-              error ? "text-red-400" : "text-on-surface-variant/60"
-            )}>
+            <Label
+              className={cn(
+                "text-[10px] font-black uppercase tracking-[0.2em] transition-colors group-focus-within:text-primary",
+                error ? "text-red-400" : "text-on-surface-variant/60",
+              )}
+            >
               Qtd:
             </Label>
             {error && (
@@ -44,12 +49,14 @@ export const SelectQuantity = ({ name, control, error }: SelectQuantityProps) =>
               </span>
             )}
           </div>
-          <div className={cn(
-            "flex h-14 border rounded-xl transition-all focus-within:ring-2 focus-within:ring-offset-0",
-            error 
-              ? "border-red-500/50 bg-surface-container-low focus-within:ring-red-500/20 focus-within:border-red-500" 
-              : "border-white/5 bg-surface-container-low focus-within:ring-primary/20 focus-within:border-primary/50"
-          )}>
+          <div
+            className={cn(
+              "flex h-14 border rounded-xl transition-all focus-within:ring-2 focus-within:ring-offset-0",
+              error
+                ? "border-red-500/50 bg-surface-container-low focus-within:ring-red-500/20 focus-within:border-red-500"
+                : "border-white/5 bg-surface-container-low focus-within:ring-primary/20 focus-within:border-primary/50",
+            )}
+          >
             <input
               title="Quantidade"
               type="text"

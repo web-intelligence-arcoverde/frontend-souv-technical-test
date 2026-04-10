@@ -2,9 +2,9 @@
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/providers/auth-provider";
 import { AppShell } from "@/shared/ui/templates/app-shell/app-shell";
 import { CollectionsGrid } from "@/features/collections/components/collections-grid";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function Home() {
   const { isAuthenticated, isLoading } = useAuth();
