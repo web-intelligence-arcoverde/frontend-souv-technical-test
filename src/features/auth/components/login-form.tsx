@@ -52,7 +52,7 @@ export const LoginForm = () => {
           label="Email:"
           icon="mail"
           type="email"
-          placeholder="curator@culinary.com"
+          placeholder="lucas@webintelligenci.com"
           error={errors.email?.message}
         />
 

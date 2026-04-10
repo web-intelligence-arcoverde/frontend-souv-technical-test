@@ -3,18 +3,16 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  /* Legacy Colors */
-  --color-purple-light: #A881E6;
-  --color-purple-medium: #7450AC;
+  --color-purple-light: #a881e6;
+  --color-purple-medium: #7450ac;
   --color-purple-dark: #523480;
-  --color-gray-100: #FBF9FE;
-  --color-gray-200: #AFABB6;
+  --color-gray-100: #fbf9fe;
+  --color-gray-200: #afabb6;
   --color-gray-300: #252529;
-  --color-gray-400: #17171A;
+  --color-gray-400: #17171a;
   --color-gray-500: #111112;
-  --color-gray-600: #0C0C0D;
+  --color-gray-600: #0c0c0d;
 
-  /* Premium Design System Colors (Culinary Curator) */
   --color-outline-variant: #484847;
   --color-outline: #777575;
   --color-primary: #cc97ff;
@@ -23,7 +21,7 @@
   --color-primary-container: #c284ff;
   --color-on-primary: #47007c;
   --color-on-primary-container: #360061;
-  
+
   --color-secondary: #fdc425;
   --color-secondary-fixed: #ffca45;
   --color-secondary-dim: #edb60f;
@@ -43,7 +41,7 @@
   --color-surface-variant: #262626;
   --color-on-surface: #ffffff;
   --color-on-surface-variant: #adaaaa;
-  
+
   --color-surface-container: #1a1919;
   --color-surface-container-low: #131313;
   --color-surface-container-lowest: #000000;
@@ -52,18 +50,16 @@
 
   --color-background: #0e0e0e;
   --color-on-background: #ffffff;
-  
+
   --color-error: #ff6e84;
   --color-error-dim: #d73357;
   --color-error-container: #a70138;
   --color-on-error: #490013;
   --color-on-error-container: #ffb2b9;
 
-  /* Mappings for base utilities */
   --color-border: var(--color-outline-variant);
   --color-ring: var(--color-primary);
 
-  /* Fonts */
   --font-family-inter: "Inter", sans-serif;
   --font-jakarta: var(--font-jakarta);
   --font-body: var(--font-jakarta);
@@ -83,28 +79,30 @@
 
 @layer components {
   .glass-panel {
-    background: linear-gradient(135deg, rgba(32, 31, 31, 0.4) 0%, rgba(14, 14, 14, 0.8) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(32, 31, 31, 0.4) 0%,
+      rgba(14, 14, 14, 0.8) 100%
+    );
     backdrop-filter: blur(12px);
   }
-  
+
   .text-glow {
     text-shadow: 0 0 15px rgba(204, 151, 255, 0.3);
   }
-  
+
   .btn-gradient {
     background: linear-gradient(to bottom right, #cc97ff, #9c48ea);
     box-shadow: 0 4px 20px -2px rgba(156, 72, 234, 0.4);
   }
 }
 
-/* Reset Autocomplete Styles */
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 100px #262626 inset !important;
   -webkit-text-fill-color: #ffffff !important;
   transition: background-color 5000s ease-in-out 0s;
   caret-color: #ffffff;
 }
-
