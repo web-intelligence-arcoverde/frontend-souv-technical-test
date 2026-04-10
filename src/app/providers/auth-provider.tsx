@@ -1,8 +1,10 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import api from "@/shared/api/axios";
+import { useSnapshot } from "valtio";
+import { authState, authActions } from "@/shared/state/auth-state";
+import { AuthService } from "@/services/auth.service";
 
 interface User {
   uid: string;
@@ -24,62 +26,65 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const snap = useSnapshot(authState);
 
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
     const token = localStorage.getItem("token");
 
     if (savedUser && token) {
-      setUser(JSON.parse(savedUser));
+      authActions.setUser(JSON.parse(savedUser));
+    } else {
+      authActions.setLoading(false);
     }
-    setIsLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
-    const response = await api.post("/auth/login", { email, password });
-    const { token, refreshToken, ...userData } = response.data;
+    try {
+      const data = await AuthService.login(email, password);
+      const { token, refreshToken, ...userData } = data;
 
-    localStorage.setItem("token", token);
-    localStorage.setItem("refreshToken", refreshToken);
-    localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", token);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("user", JSON.stringify(userData));
 
-    setUser(userData);
-    router.push("/");
+      authActions.setUser(userData);
+      router.push("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+      throw error;
+    }
   };
 
   const register = async (name: string, email: string, password: string) => {
-    const response = await api.post("/auth/register", {
-      name,
-      email,
-      password,
-    });
-    const { token, refreshToken, ...userData } = response.data;
+    try {
+      const data = await AuthService.register(name, email, password);
+      const { token, refreshToken, ...userData } = data;
 
-    localStorage.setItem("token", token);
-    localStorage.setItem("refreshToken", refreshToken);
-    localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", token);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("user", JSON.stringify(userData));
 
-    setUser(userData);
-    router.push("/");
+      authActions.setUser(userData);
+      router.push("/");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      throw error;
+    }
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("user");
-    setUser(null);
+    authActions.logout();
     router.push("/login");
   };
 
   return (
     <AuthContext.Provider
       value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
+        user: snap.user as User | null,
+        isAuthenticated: snap.isAuthenticated,
+        isLoading: snap.isLoading,
         login,
         register,
         logout,

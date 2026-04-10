@@ -47,8 +47,6 @@ export const ShoppingListProvider = ({ children }: { children: ReactNode }) => {
     isError,
   } = useGetShoppingListDetail(listId);
 
-  console.log("listData", listData);
-
   const updateProductCheckedMutation = useUpdateProductChecked();
   const deleteProductMutation = useDeleteProduct();
   const createProductMutation = useCreateProduct();
@@ -58,32 +56,35 @@ export const ShoppingListProvider = ({ children }: { children: ReactNode }) => {
     if (!listId) return;
 
     // O backend espera marketName e price, vamos passar valores padrão se não existirem
-    createProductMutation.mutate({
-      ...item,
-      listId,
-      marketName: item.marketName || "Mercado Principal",
-      price: item.price || 0,
-      name: item.name || "",
-      category: item.category || "Geral",
-      quantity: item.quantity || 1,
-      unit: item.unit || "un",
-      checked: false,
-    } as ProductProps & { listId: string }, {
-      onSuccess: () => {
-        toast({
-          title: "Produto Adicionado!",
-          description: `${item.name} foi colocado na sua lista.`,
-          variant: "success",
-        });
+    createProductMutation.mutate(
+      {
+        ...item,
+        listId,
+        marketName: item.marketName || "Mercado Principal",
+        price: item.price || 0,
+        name: item.name || "",
+        category: item.category || "Geral",
+        quantity: item.quantity || 1,
+        unit: item.unit || "un",
+        checked: false,
+      } as ProductProps & { listId: string },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Produto Adicionado!",
+            description: `${item.name} foi colocado na sua lista.`,
+            variant: "success",
+          });
+        },
+        onError: () => {
+          toast({
+            title: "Erro ao adicionar",
+            description: "Não foi possível adicionar o produto agora.",
+            variant: "destructive",
+          });
+        },
       },
-      onError: () => {
-        toast({
-          title: "Erro ao adicionar",
-          description: "Não foi possível adicionar o produto agora.",
-          variant: "destructive",
-        });
-      }
-    });
+    );
   };
 
   const toggleItemChecked = (id: string) => {
@@ -102,14 +103,17 @@ export const ShoppingListProvider = ({ children }: { children: ReactNode }) => {
 
   const deleteItem = (id: string) => {
     if (!listId) return;
-    deleteProductMutation.mutate({ id, listId }, {
-      onSuccess: () => {
-        toast({
-          title: "Item Removido",
-          description: "O produto foi retirado da sua lista.",
-        });
-      }
-    });
+    deleteProductMutation.mutate(
+      { id, listId },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Item Removido",
+            description: "O produto foi retirado da sua lista.",
+          });
+        },
+      },
+    );
   };
 
   const handlePreviuesPage = () => {
