@@ -1,6 +1,6 @@
-import { useShoppingList } from "@/app/providers/shopping-list-provider";
+import React, { useContext, useState } from "react";
+import { ShoppingListContext } from "@/app/providers/shopping-list-provider";
 import { MoreVertical, Trash2 } from "lucide-react";
-import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface ActionMenuProductProps {
@@ -8,8 +8,15 @@ interface ActionMenuProductProps {
 }
 
 export const ActionMenuProduct = ({ id }: ActionMenuProductProps) => {
-  const { deleteItem } = useShoppingList();
+  const context = useContext(ShoppingListContext);
   const [isVisible, setIsVisible] = useState(false);
+
+  const handleDelete = () => {
+    if (context) {
+      context.deleteItem(id);
+      setIsVisible(false);
+    }
+  };
 
   return (
     <div className="relative">
@@ -37,10 +44,7 @@ export const ActionMenuProduct = ({ id }: ActionMenuProductProps) => {
           >
             <button
               className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-error hover:bg-error/10 transition-colors text-left"
-              onClick={() => {
-                deleteItem(id);
-                setIsVisible(false);
-              }}
+              onClick={handleDelete}
             >
               <Trash2 size={16} />
               Excluir Item

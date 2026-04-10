@@ -1,16 +1,24 @@
 import api from "@/shared/api/axios";
+import { ProductProps } from "@/types/product";
 import { IShoppingList } from "@/types/shopping-list";
 
 const API_BASE_URL = "/shopping-list";
 
 export const ShoppingListService = {
-  async getShoppingLists(): Promise<IShoppingList[]> {
-    const response = await api.get(API_BASE_URL);
+  async getShoppingLists(page?: number, limit?: number): Promise<IShoppingList[]> {
+    const response = await api.get(API_BASE_URL, {
+      params: { page, limit }
+    });
     return response.data;
   },
 
   async getShoppingListById(id: string): Promise<IShoppingList> {
     const response = await api.get(`${API_BASE_URL}/${id}`);
+    return response.data;
+  },
+
+  async getPublicShoppingListById(id: string): Promise<IShoppingList> {
+    const response = await api.get(`${API_BASE_URL}/shared/${id}`);
     return response.data;
   },
 
@@ -27,8 +35,8 @@ export const ShoppingListService = {
     await api.delete(`${API_BASE_URL}/${id}`);
   },
 
-  async addProductToList(id: string, product: any): Promise<any> {
-    const response = await api.post(`${API_BASE_URL}/${id}/product`, product);
+  async addProductToList(id: string, product: ProductProps): Promise<ProductProps> {
+    const response = await api.post<ProductProps>(`${API_BASE_URL}/${id}/product`, product);
     return response.data;
   }
 };

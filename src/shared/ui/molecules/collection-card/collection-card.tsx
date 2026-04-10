@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { formatRelativeTime } from "@/lib/date-utils";
 import { CollectionCardProps } from "./collection-card.interface";
 import { useDeleteShoppingList } from "@/hooks/use-delete-shopping-list";
+import { useToast } from "@/hooks/use-toast";
 
 export const CollectionCard = ({
   id,
@@ -21,6 +22,7 @@ export const CollectionCard = ({
   onOpen,
   className,
 }: CollectionCardProps) => {
+  const { toast } = useToast();
   const { mutate: deleteList, isPending: isDeleting } = useDeleteShoppingList();
   const progress = (securedItems / totalItems) * 100;
   const isCompleted = securedItems === totalItems;
@@ -37,14 +39,64 @@ export const CollectionCard = ({
     tertiary: "tertiary" as const,
   };
 
+  const handleShare = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const shareUrl = `${window.location.origin}/shared/${id}`;
+
+    const onSuccess = () => {
+      toast({
+        title: "Link copiado!",
+        description: "O link da lista foi copiado para seu clipboard.",
+      });
+    };
+
+    const fallbackCopy = (text: string) => {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        const successful = document.execCommand("copy");
+        if (successful) onSuccess();
+      } catch (err) {
+        console.error("Fallback: Erro ao copiar", err);
+      }
+      document.body.removeChild(textArea);
+    };
+
+    try {
+      if (navigator && navigator.clipboard) {
+        await navigator.clipboard.writeText(shareUrl);
+        onSuccess();
+      } else {
+        fallbackCopy(shareUrl);
+      }
+    } catch {
+      fallbackCopy(shareUrl);
+    }
+  };
+
   return (
     <div
+      onClick={() => onOpen?.()}
       className={cn(
         "bg-surface-container-low rounded-3xl p-8 group hover:bg-surface-container-high transition-all duration-500 relative overflow-hidden flex flex-col h-full border border-white/5 hover:border-white/10 shadow-xl hover:shadow-2xl",
         className,
       )}
     >
       <div className="absolute top-4 right-4 z-20">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleShare}
+          className="rounded-full w-10 h-10 text-on-surface-variant hover:bg-error/10 hover:text-error transition-all "
+        >
+          <span className="material-symbols-outlined text-xl">share</span>
+        </Button>
         <Button
           variant="ghost"
           size="icon"

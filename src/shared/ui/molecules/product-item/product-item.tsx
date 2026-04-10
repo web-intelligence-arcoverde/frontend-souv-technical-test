@@ -1,8 +1,7 @@
-"use client";
-
+import React, { useContext } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CategoryTag } from "../category-tag/category-tag";
-import { useShoppingList } from "@/app/providers/shopping-list-provider";
+import { ShoppingListContext } from "@/app/providers/shopping-list-provider";
 import { ActionMenuProduct } from "./action-menu-product";
 import { cn } from "@/lib/utils";
 
@@ -13,6 +12,7 @@ export interface ItemProps {
   unit: string;
   id: string;
   checked: boolean;
+  isReadOnly?: boolean;
 }
 
 export const ProductItem = ({
@@ -22,8 +22,15 @@ export const ProductItem = ({
   unit,
   id,
   checked,
+  isReadOnly = false,
 }: ItemProps) => {
-  const { toggleItemChecked } = useShoppingList();
+  const context = useContext(ShoppingListContext);
+
+  const handleToggle = () => {
+    if (!isReadOnly && context) {
+      context.toggleItemChecked(id);
+    }
+  };
 
   return (
     <div
@@ -35,7 +42,8 @@ export const ProductItem = ({
       <div className="flex flex-row items-center flex-1">
         <Checkbox
           checked={checked}
-          onCheckedChange={() => toggleItemChecked(id)}
+          onCheckedChange={handleToggle}
+          disabled={isReadOnly}
           className="w-5 h-5 border-2 border-outline-variant/30 rounded-lg data-[state=checked]:bg-primary data-[state=checked]:border-primary transition-all duration-300"
         />
         <div className="flex flex-col ml-6">
@@ -54,7 +62,7 @@ export const ProductItem = ({
       </div>
       <div className="flex flex-row items-center gap-6">
         <CategoryTag category={category} />
-        <ActionMenuProduct id={id} />
+        {!isReadOnly && <ActionMenuProduct id={id} />}
       </div>
     </div>
   );
