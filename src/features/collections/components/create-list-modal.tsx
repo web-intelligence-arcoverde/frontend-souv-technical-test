@@ -4,70 +4,62 @@ import React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
-const createListSchema = z.object({
-  name: z.string().min(3, "O nome deve ter pelo menos 3 caracteres"),
-  category: z.string().min(1, "Selecione uma categoria"),
-});
-
-type CreateListFormValues = z.infer<typeof createListSchema>;
-
-const CATEGORIES = [
-  { id: "meat", label: "Carnes", icon: "restaurant", color: "text-primary" },
-  {
-    id: "bakery",
-    label: "Padaria",
-    icon: "bakery_dining",
-    color: "text-secondary",
-  },
-  { id: "produce", label: "Hortifruti", icon: "eco", color: "text-tertiary" },
-  {
-    id: "dairy",
-    label: "Laticínios",
-    icon: "water_drop",
-    color: "text-blue-400",
-  },
-  {
-    id: "pantry",
-    label: "Despensa",
-    icon: "inventory_2",
-    color: "text-zinc-400",
-  },
-];
-
-interface CreateListModalProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-}
+import { useCreateShoppingList } from "@/hooks/use-create-shopping-list";
+import { useToast } from "@/hooks/use-toast";
+import { InputWithLabel } from "@/shared/ui/molecules/Input/Input";
+import { TextareaWithLabel } from "@/shared/ui/molecules/Textarea/Textarea";
+import { ThemeSelector } from "@/shared/ui/molecules/theme-selector/theme-selector";
+import { SHOPPING_LIST_TYPES } from "@/constants/shopping-list-types";
+import {
+  createListSchema,
+  CreateListFormValues,
+} from "../schemas/create-list-schema";
+import { CreateListModalProps } from "../types/create-list-modal";
 
 export const CreateListModal = ({
   isOpen,
   onOpenChange,
 }: CreateListModalProps) => {
+  const { mutate: createList, isPending } = useCreateShoppingList();
+  const { toast } = useToast();
+
   const {
-    register,
     handleSubmit,
-    setValue,
-    watch,
+    control,
     formState: { errors },
     reset,
   } = useForm<CreateListFormValues>({
     resolver: zodResolver(createListSchema),
     defaultValues: {
-      name: "",
+      title: "",
+      description: "",
       category: "",
     },
   });
 
-  const selectedCategory = watch("category");
-
   const onSubmit = (data: CreateListFormValues) => {
-    console.log("Creating list:", data);
-    // Mock successful creation
-    onOpenChange(false);
-    reset();
+    createList(data, {
+      onSuccess: () => {
+        toast({
+          title: "Sucesso!",
+          description: "Sua nova lista foi criada com sucesso.",
+          variant: "success",
+        });
+        onOpenChange(false);
+        reset();
+      },
+      onError: () => {
+        toast({
+          title: "Erro ao criar lista",
+          description:
+            "Ocorreu um problema ao tentar criar sua lista. Tente novamente.",
+          variant: "destructive",
+        });
+      },
+    });
   };
 
   return (
@@ -78,103 +70,67 @@ export const CreateListModal = ({
         <Dialog.Content
           className={cn(
             "fixed z-[101] bg-surface-container-low border border-white/5 shadow-2xl transition-all duration-300 h-fit",
-            "lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 lg:w-full lg:max-w-lg lg:rounded-[2rem] lg:p-10",
-            "left-0 bottom-0 w-full rounded-t-[2.5rem] p-8 pb-12", // Mobile Bottom Sheet
+            "lg:left-1/2 lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 lg:w-full lg:max-w-xl lg:rounded-[2rem] lg:p-10",
+            "left-0 bottom-0 w-full rounded-t-[2.5rem] p-8 pb-12",
             "data-[state=open]:animate-in data-[state=closed]:animate-out lg:data-[state=closed]:zoom-out-95 lg:data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
           )}
         >
-          {/* Mobile Handlebar */}
           <div className="lg:hidden flex justify-center mb-6">
             <div className="w-12 h-1 bg-outline-variant rounded-full opacity-30" />
           </div>
 
           <div className="flex justify-between items-center mb-8">
             <Dialog.Title className="text-2xl font-black text-white tracking-tighter">
-              Nova Lista
+              Criar Lista de Compras
             </Dialog.Title>
             <Dialog.Close asChild>
-              <button className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-highest/50 text-on-surface-variant hover:text-white transition-colors">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full bg-surface-container-highest/50 text-on-surface-variant hover:text-white transition-colors"
+              >
                 <span className="material-symbols-outlined">close</span>
-              </button>
+              </Button>
             </Dialog.Close>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* List Name */}
-            <div className="space-y-3">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-primary ml-1">
-                Nome da Lista
-              </label>
-              <div className="relative group">
-                <input
-                  {...register("name")}
-                  className={cn(
-                    "w-full bg-surface-container-highest border-none rounded-2xl py-4 px-6 text-on-surface text-lg",
-                    "placeholder:text-on-surface-variant/30 focus:ring-1 focus:ring-primary/40 transition-all",
-                    errors.name && "ring-1 ring-error/50",
-                  )}
-                  placeholder="ex: Churrasco de Domingo"
-                />
-              </div>
-              {errors.name && (
-                <p className="text-xs text-error font-bold ml-1">
-                  {errors.name.message}
-                </p>
-              )}
-            </div>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <InputWithLabel
+              control={control}
+              name="title"
+              label="Nome da Lista de Compras:"
+              placeholder="ex: Compras de Janeiro"
+              error={errors.title?.message}
+            />
 
-            {/* Categories */}
-            <div className="space-y-4">
-              <label className="text-[10px] font-black uppercase tracking-[0.2em] text-on-surface-variant/70 ml-1">
-                Selecione o Tema
-              </label>
-              <div className="flex flex-wrap gap-3">
-                {CATEGORIES.map((cat) => (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => setValue("category", cat.id)}
-                    className={cn(
-                      "flex items-center gap-2.5 px-6 py-3 rounded-full transition-all active:scale-95 border-2",
-                      selectedCategory === cat.id
-                        ? "bg-primary text-on-primary border-primary shadow-[0_0_20px_rgba(204,151,255,0.2)]"
-                        : "bg-surface-container-highest text-on-surface-variant border-transparent hover:border-white/10",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "material-symbols-outlined text-[20px]",
-                        selectedCategory === cat.id ? "fill-1" : "",
-                      )}
-                      style={
-                        selectedCategory === cat.id
-                          ? { fontVariationSettings: "'FILL' 1" }
-                          : {}
-                      }
-                    >
-                      {cat.icon}
-                    </span>
-                    <span className="text-xs font-bold tracking-tight">
-                      {cat.label}
-                    </span>
-                  </button>
-                ))}
-              </div>
-              {errors.category && (
-                <p className="text-xs text-error font-bold ml-1">
-                  {errors.category.message}
-                </p>
-              )}
-            </div>
+            <TextareaWithLabel
+              control={control}
+              name="description"
+              label="Descrição:"
+              placeholder="Descreva o propósito desta lista..."
+              error={errors.description?.message}
+              rows={3}
+            />
 
-            {/* Footer */}
-            <div className="pt-6 space-y-6">
-              <button
+            <ThemeSelector
+              control={control}
+              name="category"
+              label="Selecione o Tema:"
+              options={SHOPPING_LIST_TYPES}
+              error={errors.category?.message}
+            />
+
+            <div className="pt-4">
+              <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-primary to-primary-dim text-on-primary-fixed h-14 rounded-2xl font-black text-lg tracking-tight shadow-[0_8px_30px_rgba(204,151,255,0.2)] active:scale-[0.98] transition-all hover:brightness-110"
+                disabled={isPending}
+                className={cn(
+                  "w-full bg-gradient-to-r from-primary to-primary-dim text-on-primary-fixed h-14 rounded-2xl font-black text-lg tracking-tight shadow-[0_8px_30px_rgba(204,151,255,0.2)] active:scale-[0.98] transition-all hover:brightness-110 flex items-center justify-center",
+                  isPending && "opacity-70 cursor-not-allowed",
+                )}
               >
-                Criar Coleção
-              </button>
+                {isPending ? "Criando..." : "Criar"}
+              </Button>
             </div>
           </form>
         </Dialog.Content>

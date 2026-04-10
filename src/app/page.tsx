@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/providers/auth-provider";
 import { AppShell } from "@/shared/ui/templates/app-shell/app-shell";
 import { CollectionsGrid } from "@/features/collections/components/collections-grid";
-import { Button } from "@/shared/ui/atoms/Button/Button";
 
 export default function Home() {
-  const { isAuthenticated, isLoading, logout } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -35,20 +34,12 @@ export default function Home() {
       <header className="mb-14 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
         <div>
           <h1 className="text-5xl md:text-7xl font-black text-on-surface tracking-tighter mb-4 leading-none">
-            Minhas Listas de Compras
+            Minhas Listas
           </h1>
           <p className="text-on-surface-variant text-lg font-medium opacity-70 tracking-tight max-w-2xl">
             Gerencie e organize suas listas de compras.
           </p>
         </div>
-        <Button
-          variant="secondary"
-          onClick={logout}
-          className="md:mb-1 gap-2"
-        >
-          <span className="material-symbols-outlined text-xl">logout</span>
-          Sair
-        </Button>
       </header>
 
       <CollectionsGrid />

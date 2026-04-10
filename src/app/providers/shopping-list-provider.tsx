@@ -8,6 +8,7 @@ import React, { createContext, useContext, ReactNode } from "react";
 import { useSearchParams } from "next/navigation";
 import { ProductProps } from "@/types/product";
 import { IShoppingList } from "@/types/shopping-list";
+import { useToast } from "@/hooks/use-toast";
 
 interface Pagination {
   page: number;
@@ -51,6 +52,7 @@ export const ShoppingListProvider = ({ children }: { children: ReactNode }) => {
   const updateProductCheckedMutation = useUpdateProductChecked();
   const deleteProductMutation = useDeleteProduct();
   const createProductMutation = useCreateProduct();
+  const { toast } = useToast();
 
   const addItem = (item: Partial<ProductProps>) => {
     if (!listId) return;
@@ -59,14 +61,29 @@ export const ShoppingListProvider = ({ children }: { children: ReactNode }) => {
     createProductMutation.mutate({
       ...item,
       listId,
-      marketName: (item as any).marketName || "Mercado Principal",
-      price: (item as any).price || 0,
+      marketName: item.marketName || "Mercado Principal",
+      price: item.price || 0,
       name: item.name || "",
       category: item.category || "Geral",
       quantity: item.quantity || 1,
       unit: item.unit || "un",
       checked: false,
-    } as ProductProps & { listId: string });
+    } as ProductProps & { listId: string }, {
+      onSuccess: () => {
+        toast({
+          title: "Produto Adicionado!",
+          description: `${item.name} foi colocado na sua lista.`,
+          variant: "success",
+        });
+      },
+      onError: () => {
+        toast({
+          title: "Erro ao adicionar",
+          description: "Não foi possível adicionar o produto agora.",
+          variant: "destructive",
+        });
+      }
+    });
   };
 
   const toggleItemChecked = (id: string) => {
@@ -85,7 +102,14 @@ export const ShoppingListProvider = ({ children }: { children: ReactNode }) => {
 
   const deleteItem = (id: string) => {
     if (!listId) return;
-    deleteProductMutation.mutate({ id, listId });
+    deleteProductMutation.mutate({ id, listId }, {
+      onSuccess: () => {
+        toast({
+          title: "Item Removido",
+          description: "O produto foi retirado da sua lista.",
+        });
+      }
+    });
   };
 
   const handlePreviuesPage = () => {

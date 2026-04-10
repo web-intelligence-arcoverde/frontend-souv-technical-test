@@ -3,25 +3,13 @@ import { Badge } from "@/shared/ui/atoms/badge/badge";
 import { ProgressBar } from "@/shared/ui/atoms/progress-bar/progress-bar";
 import { Button } from "@/shared/ui/atoms/Button/Button";
 import { cn } from "@/lib/utils";
-import { ProductProps } from "@/types/product";
-import { FirestoreTimestamp } from "@/types/shopping-list";
-import { formatRelativeTime } from "@/lib/date-utils";
 
-export interface CollectionCardProps {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  variant: "primary" | "secondary" | "tertiary";
-  totalItems: number;
-  securedItems: number;
-  items: ProductProps[];
-  lastModified: FirestoreTimestamp;
-  onOpen?: () => void;
-  className?: string;
-}
+import { formatRelativeTime } from "@/lib/date-utils";
+import { CollectionCardProps } from "./collection-card.interface";
+import { useDeleteShoppingList } from "@/hooks/use-delete-shopping-list";
 
 export const CollectionCard = ({
+  id,
   title,
   description,
   category,
@@ -33,6 +21,7 @@ export const CollectionCard = ({
   onOpen,
   className,
 }: CollectionCardProps) => {
+  const { mutate: deleteList, isPending: isDeleting } = useDeleteShoppingList();
   const progress = (securedItems / totalItems) * 100;
   const isCompleted = securedItems === totalItems;
 
@@ -55,17 +44,21 @@ export const CollectionCard = ({
         className,
       )}
     >
-      {/* Background Icon Accent */}
-      <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-all duration-500 group-hover:scale-110 pointer-events-none">
-        <span className="material-symbols-outlined text-8xl">
-          {category.toLowerCase().includes("meat")
-            ? "local_grocery_store"
-            : category.toLowerCase().includes("bakery")
-              ? "restaurant"
-              : category.toLowerCase().includes("wine")
-                ? "wine_bar"
-                : "spa"}
-        </span>
+      <div className="absolute top-4 right-4 z-20">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (confirm("Tem certeza que deseja excluir esta lista?")) {
+              deleteList(id);
+            }
+          }}
+          isLoading={isDeleting}
+          className="rounded-full w-10 h-10 text-on-surface-variant hover:bg-error/10 hover:text-error transition-all "
+        >
+          <span className="material-symbols-outlined text-xl">delete</span>
+        </Button>
       </div>
 
       <div className="mb-8">
@@ -78,7 +71,6 @@ export const CollectionCard = ({
         </p>
       </div>
 
-      {/* Items Preview (Desktop List Style) */}
       <div className="space-y-4 mb-8 flex-1">
         {items.slice(0, 3).map((item) => (
           <div
@@ -105,7 +97,6 @@ export const CollectionCard = ({
         ))}
       </div>
 
-      {/* Progress Section */}
       <div className="space-y-3 mb-8">
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-black text-on-surface-variant tracking-[0.2em] uppercase">
@@ -120,7 +111,6 @@ export const CollectionCard = ({
         <ProgressBar value={progress} variant={variant} />
       </div>
 
-      {/* Footer Actions */}
       <div className="flex items-center justify-between mt-auto pt-6 border-t border-outline-variant/10">
         <div className="text-[10px] text-on-surface-variant/80 font-bold">
           <span className="block uppercase tracking-wider">Modificado</span>

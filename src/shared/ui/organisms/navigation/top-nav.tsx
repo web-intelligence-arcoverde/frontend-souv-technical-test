@@ -2,8 +2,11 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/app/providers/auth-provider";
 
 export const TopNav = () => {
+  const { logout } = useAuth();
   return (
     <header className="flex justify-between items-center w-full px-6 md:px-10 py-6 bg-surface z-40 border-b border-white/5 md:border-none">
       <div className="flex flex-col lg:hidden">
@@ -31,11 +34,10 @@ export const TopNav = () => {
       </div>
 
       <div className="flex items-center gap-2 md:gap-5">
-        <div className="flex items-center gap-1 md:gap-2">
-          <button className="hidden sm:flex w-10 h-10 items-center justify-center rounded-xl hover:bg-surface-container-high transition-all text-on-surface-variant hover:text-white">
-            <span className="material-symbols-outlined text-2xl">settings</span>
-          </button>
-        </div>
+        <Button onClick={logout} className="md:mb-1 gap-2">
+          <span className="material-symbols-outlined text-xl">logout</span>
+          Sair
+        </Button>
       </div>
     </header>
   );

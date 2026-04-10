@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
-import "./globals.css";
 import { AuthProvider } from "./providers/auth-provider";
 import { QueryProvider } from "./providers/query-provider";
-import { ShoppingListProvider } from "./providers/shopping-list-provider";
+
+import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -15,9 +15,11 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Culinary Curator | Premium Login",
-  description: "The art of fine provisions.",
+  title: "Shopping List",
+  description: "Shopping List",
 };
+
+import { Toaster } from "@/components/ui/toaster";
 
 export default function RootLayout({
   children,
@@ -37,6 +39,7 @@ export default function RootLayout({
       >
         <QueryProvider>
           <AuthProvider>{children}</AuthProvider>
+          <Toaster />
         </QueryProvider>
       </body>
     </html>
