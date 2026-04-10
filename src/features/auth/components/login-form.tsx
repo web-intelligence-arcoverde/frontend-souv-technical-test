@@ -46,7 +46,6 @@ export const LoginForm = () => {
           </div>
         )}
 
-        {/* Email Field */}
         <TextField
           {...register("email")}
           id="email"
@@ -57,7 +56,6 @@ export const LoginForm = () => {
           error={errors.email?.message}
         />
 
-        {/* Password Field */}
         <TextField
           {...register("password")}
           id="password"
@@ -79,7 +77,6 @@ export const LoginForm = () => {
           }
         />
 
-        {/* Sign In Button */}
         <Button
           variant="premium-gradient"
           size="full"
@@ -99,7 +96,6 @@ export const LoginForm = () => {
         <div className="flex-grow h-[1px] bg-outline-variant/20"></div>
       </div>
 
-      {/* Social Logins */}
       <SocialAuthGroup />
 
       <div className="mt-8 text-center" />

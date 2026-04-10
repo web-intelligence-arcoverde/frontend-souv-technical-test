@@ -96,3 +96,15 @@
     box-shadow: 0 4px 20px -2px rgba(156, 72, 234, 0.4);
   }
 }
+
+/* Reset Autocomplete Styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 100px #262626 inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  transition: background-color 5000s ease-in-out 0s;
+  caret-color: #ffffff;
+}
+
