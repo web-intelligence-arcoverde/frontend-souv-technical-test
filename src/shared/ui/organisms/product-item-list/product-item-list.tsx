@@ -1,6 +1,5 @@
 "use client";
 
-import { useShoppingList } from "@/app/providers/shopping-list-provider";
 import {
   ItemProps,
   ProductItem,
@@ -13,9 +12,17 @@ const sortProducts = (products: ItemProps[]): ItemProps[] => {
   return [...products].sort((a, b) => Number(a.checked) - Number(b.checked));
 };
 
-export const ProductItemList = () => {
-  const { products, isLoading, handleNextPage, handlePreviuesPage } = useShoppingList();
-
+export const ProductItemList = ({
+  products,
+  isLoading,
+  handleNextPage,
+  handlePreviuesPage,
+}: {
+  products: ItemProps[];
+  isLoading: boolean;
+  handleNextPage: () => void;
+  handlePreviuesPage: () => void;
+}) => {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
@@ -40,7 +47,7 @@ export const ProductItemList = () => {
           <ProductItem key={`${item.id}-${item.name}`} {...item} />
         ))}
       </div>
-      
+
       <div className="mt-8 pt-8 border-t border-white/5 w-full">
         <PaginationProductList
           currentPage={products.currentPage}

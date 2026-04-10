@@ -1,92 +1,89 @@
-'use client'
+"use client";
 
-import {
-  Apple,
-  Beef,
-  Carrot,
-  Milk,
-  PlusIcon,
-  Sandwich,
-} from "lucide-react";
+import { PlusIcon } from "lucide-react";
 
 import { Button } from "../../atoms/Button/Button";
 import { InputWithLabel } from "../../molecules/Input/Input";
-import { CustomSelect } from "../../atoms/custom-select/custom-select";
 import { SelectQuantity } from "../../molecules/select-quantity/select-quantity";
-
-import { Controller } from "react-hook-form";
-
+import { SelectCategory } from "../../molecules/select-category/select-category";
 import { useRegisterProduct } from "./use-register-product";
-
-
-
-const optionsCategory = [
-  {
-    value: "padaria",
-    label: "Padaria",
-    icon: <Sandwich size={16} className="text-yellow" />,
-  },
-  {
-    value: "legume",
-    label: "Legume",
-    icon: <Carrot size={16} className="text-green" />,
-  },
-  {
-    value: "carne",
-    label: "Carne",
-    icon: <Beef size={16} className="text-pink" />,
-  },
-  {
-    value: "fruta",
-    label: "Fruta",
-    icon: <Apple size={16} className="text-orange" />,
-  },
-  {
-    value: "bebida",
-    label: "Bebida",
-    icon: <Milk size={16} className="text-blue" />,
-  },
-];
+import { CATEGORY_OPTIONS } from "@/shared/constants/categories";
+import { cn } from "@/lib/utils";
 
 export const RegisterProductForm = () => {
-
-  const { handleSubmit, onSubmit, control } = useRegisterProduct()
-
+  const { handleSubmit, onSubmit, control, errors, isValid } =
+    useRegisterProduct();
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex md:flex-row flex-col items-end gap-2">
-      <InputWithLabel
-        control={control}
-        name="item"
-        label="Item"
-        className="md:w-[368px] w-full"
-      />
-      <div className="flex flex-row items-end gap-2 w-full">
-        <SelectQuantity
-          control={control}
-          name="quantity"
-        />
-        <Controller
-          name="category"
-          control={control}
-          render={({ field: { onChange } }) => (
-            <CustomSelect
-              label="Categoria"
-              options={optionsCategory}
-              placeholder="Selecione"
-              onChange={(event) => onChange((event as { value: string })?.value)}
-            />
-          )}
-        />
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex mb-8 flex-col gap-6 bg-surface-container-high/30 p-8 rounded-[32px] border border-white/5 shadow-inner"
+    >
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-row gap-4">
+          <InputWithLabel
+            control={control}
+            name="item"
+            label="Nome do Produto:"
+            placeholder="Ex: Leite Integral"
+            error={errors.item?.message}
+          />
 
+          <InputWithLabel
+            control={control}
+            name="marketName"
+            label="Nome do Mercado:"
+            placeholder="Ex: Carrefour"
+            error={errors.marketName?.message}
+          />
+        </div>
+        <div className="flex flex-row gap-4">
+          <InputWithLabel
+            control={control}
+            name="price"
+            label="Preço Unit"
+            placeholder="R$ 0,00"
+            isCurrency
+            error={errors.price?.message}
+          />
+
+          <SelectCategory
+            control={control}
+            name="category"
+            label="Categoria:"
+            placeholder="Tipo"
+            options={CATEGORY_OPTIONS}
+            error={errors.category?.message}
+          />
+
+          <SelectQuantity
+            control={control}
+            name="quantity"
+            error={errors.quantity?.quantity?.message}
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-end pt-2 border-t border-white/5">
         <Button
           type="submit"
-          className="bg-purple-medium rounded-full p-2 w-10 h-10 hover:purple-dark transition-colors"
+          disabled={!isValid}
+          className={cn(
+            "w-full md:w-auto mt-4 rounded-xl px-12 h-12 font-black uppercase text-[11px] tracking-[0.3em] transition-all",
+            isValid
+              ? "bg-primary hover:bg-primary-hover text-on-primary shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/40 active:scale-[0.98]"
+              : "bg-surface-container-highest text-on-surface-variant/40 cursor-not-allowed opacity-50 border border-white/5",
+          )}
         >
-          <PlusIcon color="#FBF9FE" />
+          <PlusIcon
+            className={cn(
+              "w-5 h-5 mr-3 stroke-[3]",
+              isValid ? "animate-pulse" : "",
+            )}
+          />
+          Adicionar
         </Button>
       </div>
     </form>
-  )
-
-}
+  );
+};

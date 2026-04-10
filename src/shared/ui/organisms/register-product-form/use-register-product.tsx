@@ -11,9 +11,12 @@ export const useRegisterProduct = () => {
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(formSchema),
+    mode: "onChange",
     defaultValues: {
       item: "",
-      quantity: { unit: "", quantity: 0 },
+      marketName: "",
+      price: 0,
+      quantity: { unit: "un", quantity: 1 },
       category: "",
     },
   });
@@ -21,20 +24,28 @@ export const useRegisterProduct = () => {
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid, isDirty },
     reset,
   } = methods;
 
   const onSubmit = (data: FormValues) => {
     addItem({
       name: data.item,
+      marketName: data.marketName,
+      price: data.price,
       quantity: data.quantity.quantity,
       unit: data.quantity.unit,
       category: data.category,
     });
 
-    reset();
+    reset({
+      item: "",
+      marketName: "",
+      price: 0,
+      quantity: { unit: "un", quantity: 1 },
+      category: "",
+    });
   };
 
-  return { onSubmit, control, handleSubmit, errors };
+  return { onSubmit, control, handleSubmit, errors, isValid, isDirty };
 };

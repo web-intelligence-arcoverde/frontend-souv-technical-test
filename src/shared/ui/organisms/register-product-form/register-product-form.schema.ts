@@ -1,10 +1,14 @@
 import { z } from "zod";
 
 export const formSchema = z.object({
-  item: z.string().min(1, "O nome do item é obrigatório"),
+  item: z.string().min(2, "O nome do produto deve ter pelo menos 2 caracteres"),
+  marketName: z.string().min(2, "Informe o nome do mercado"),
+  price: z.coerce
+    .number({ invalid_type_error: "Informe um preço válido" })
+    .min(0.01, "O preço deve ser maior que zero"),
   quantity: z.object({
-    quantity: z.number().min(1, "A quantidade deve ser maior que 0"),
-    unit: z.string().min(1, "A unidade é obrigatória"),
+    quantity: z.number().min(1, "A quantidade deve ser pelo menos 1"),
+    unit: z.string().min(1, "Selecione uma unidade"),
   }),
-  category: z.string().min(1, "A categoria é obrigatória"),
+  category: z.string().min(1, "Selecione uma categoria"),
 });

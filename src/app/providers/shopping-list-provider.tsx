@@ -2,35 +2,28 @@
 
 import { useCreateProduct } from "@/hooks/use-create-product";
 import { useDeleteProduct } from "@/hooks/use-delete-product";
-import { useGetProducts } from "@/hooks/use-get-product";
+import { useGetShoppingListDetail } from "@/hooks/use-get-shopping-list-detail";
 import { useUpdateProductChecked } from "@/hooks/use-update-checked-product";
-import React, { createContext, useContext, useState, ReactNode } from "react";
-
-// Define o tipo para um item de produto
-type ProductItem = {
-  id: number;
-  name: string;
-  quantity: number;
-  unit: string;
-  category: string;
-  checked: boolean;
-  position: number;
-};
+import React, { createContext, useContext, ReactNode } from "react";
+import { useSearchParams } from "next/navigation";
+import { ProductProps } from "@/types/product";
+import { IShoppingList } from "@/types/shopping-list";
 
 interface Pagination {
   page: number;
   limit: number;
-  data: ProductItem[];
-  currentPage: number,
-  totalPages: number,
+  data: ProductProps[];
+  currentPage: number;
+  totalPages: number;
 }
 
 // Define o tipo para o contexto
 type ShoppingListContextType = {
-  addItem: (item: Partial<ProductItem>) => void;
-  deleteItem: (id: number) => void;
-  toggleItemChecked: (id: number) => void;
+  addItem: (item: Partial<ProductProps>) => void;
+  deleteItem: (id: string) => void;
+  toggleItemChecked: (id: string) => void;
   products: Pagination;
+  list: IShoppingList | null;
   isLoading: boolean;
   isError: boolean;
   handleNextPage: () => void;
@@ -38,52 +31,78 @@ type ShoppingListContextType = {
 };
 
 // Cria o contexto
-const ShoppingListContext = createContext<ShoppingListContextType | undefined>(
-  undefined
-);
+export const ShoppingListContext = createContext<
+  ShoppingListContextType | undefined
+>(undefined);
 
 // Componente Provider
 export const ShoppingListProvider = ({ children }: { children: ReactNode }) => {
-  const [page, setPage] = useState(1);
-  const limit = 5;
-  const { data: products, isLoading, isError } = useGetProducts(page, limit);
+  const searchParams = useSearchParams();
+  const listId = searchParams.get("listId");
 
-  console.log(page)
+  const {
+    data: listData,
+    isLoading,
+    isError,
+  } = useGetShoppingListDetail(listId);
 
-  const handlePreviuesPage = () => {
-    const { totalPages } = products
-    console.log('aq', page, totalPages)
-    if (page >= 1 && page <= totalPages) {
-      setPage((oldPage) => oldPage - 1)
-    }
-  }
-
-  const handleNextPage = () => {
-    const { totalPages } = products
-    if (page < totalPages) {
-      setPage((oldPage) => oldPage + 1)
-    }
-  }
-
+  console.log("listData", listData);
 
   const updateProductCheckedMutation = useUpdateProductChecked();
-  const deleteProductMutation = useDeleteProduct()
-  const createProductMutation = useCreateProduct()
+  const deleteProductMutation = useDeleteProduct();
+  const createProductMutation = useCreateProduct();
 
-  const addItem = (item: Partial<ProductItem>) => {
-    //@ts-expect-error: mutation expects full item but Partial is passed
-    createProductMutation.mutate(item)
+  const addItem = (item: Partial<ProductProps>) => {
+    if (!listId) return;
+
+    // O backend espera marketName e price, vamos passar valores padrão se não existirem
+    createProductMutation.mutate({
+      ...item,
+      listId,
+      marketName: (item as any).marketName || "Mercado Principal",
+      price: (item as any).price || 0,
+      name: item.name || "",
+      category: item.category || "Geral",
+      quantity: item.quantity || 1,
+      unit: item.unit || "un",
+      checked: false,
+    } as ProductProps & { listId: string });
   };
 
-  const toggleItemChecked = (id: number) => {
-    const findProduct = products.data.find(
-      (item: ProductItem) => item.id === id
+  const toggleItemChecked = (id: string) => {
+    if (!listId || !listData) return;
+    const findProduct = listData.items.find(
+      (item: ProductProps) => item.id === id,
     );
-    updateProductCheckedMutation.mutate({ id, checked: !findProduct.checked });
+    if (!findProduct) return;
+
+    updateProductCheckedMutation.mutate({
+      id,
+      listId,
+      checked: !findProduct.checked,
+    });
   };
 
-  const deleteItem = (id: number) => {
-    deleteProductMutation.mutate({ id })
+  const deleteItem = (id: string) => {
+    if (!listId) return;
+    deleteProductMutation.mutate({ id, listId });
+  };
+
+  const handlePreviuesPage = () => {
+    // Paginação simplificada para o novo endpoint que retorna tudo
+  };
+
+  const handleNextPage = () => {
+    // Paginação simplificada para o novo endpoint que retorna tudo
+  };
+
+  // Adapta os dados da lista para o formato esperado pelos componentes
+  const products: Pagination = {
+    data: listData?.items || [],
+    totalPages: 1,
+    currentPage: 1,
+    page: 1,
+    limit: 100,
   };
 
   return (
@@ -93,6 +112,7 @@ export const ShoppingListProvider = ({ children }: { children: ReactNode }) => {
         deleteItem,
         toggleItemChecked,
         products,
+        list: listData || null,
         isLoading,
         isError,
         handlePreviuesPage,
@@ -109,7 +129,7 @@ export const useShoppingList = () => {
   const context = useContext(ShoppingListContext);
   if (!context) {
     throw new Error(
-      "useShoppingList deve ser usado dentro de um ShoppingListProvider"
+      "useShoppingList deve ser usado dentro de um ShoppingListProvider",
     );
   }
   return context;

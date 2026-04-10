@@ -8,17 +8,15 @@ export const useCreateProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: ProductProps) => {
+    mutationFn: (data: ProductProps & { listId: string }) => {
       return ProductService.createProduct(data)
-    }
-    ,
+    },
     onError: (error) => {
       console.error('Error:', error);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["shopping-list", variables.listId] });
+      queryClient.invalidateQueries({ queryKey: ["products", variables.listId] });
     },
   });
-
 };
-

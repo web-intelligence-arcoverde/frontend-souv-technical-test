@@ -11,7 +11,7 @@ export interface ItemProps {
   name: string;
   quantity: number;
   unit: string;
-  id: number;
+  id: string;
   checked: boolean;
 }
 

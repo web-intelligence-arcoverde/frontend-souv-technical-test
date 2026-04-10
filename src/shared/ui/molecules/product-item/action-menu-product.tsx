@@ -4,7 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface ActionMenuProductProps {
-  id: number;
+  id: string;
 }
 
 export const ActionMenuProduct = ({ id }: ActionMenuProductProps) => {

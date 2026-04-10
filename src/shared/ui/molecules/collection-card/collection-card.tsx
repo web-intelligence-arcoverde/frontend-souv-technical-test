@@ -2,26 +2,21 @@ import React from "react";
 import { Badge } from "@/shared/ui/atoms/badge/badge";
 import { ProgressBar } from "@/shared/ui/atoms/progress-bar/progress-bar";
 import { Button } from "@/shared/ui/atoms/Button/Button";
-import { AvatarStack } from "@/shared/ui/atoms/avatar-stack/avatar-stack";
 import { cn } from "@/lib/utils";
-
-export interface CollectionItem {
-  id: string;
-  name: string;
-  icon: string;
-  quantity: string;
-}
+import { ProductProps } from "@/types/product";
+import { FirestoreTimestamp } from "@/types/shopping-list";
+import { formatRelativeTime } from "@/lib/date-utils";
 
 export interface CollectionCardProps {
+  id: string;
   title: string;
   description: string;
   category: string;
   variant: "primary" | "secondary" | "tertiary";
   totalItems: number;
   securedItems: number;
-  items: CollectionItem[];
-  previews: string[];
-  lastModified: string;
+  items: ProductProps[];
+  lastModified: FirestoreTimestamp;
   onOpen?: () => void;
   className?: string;
 }
@@ -34,7 +29,6 @@ export const CollectionCard = ({
   totalItems,
   securedItems,
   items,
-  previews,
   lastModified,
   onOpen,
   className,
@@ -58,15 +52,19 @@ export const CollectionCard = ({
     <div
       className={cn(
         "bg-surface-container-low rounded-3xl p-8 group hover:bg-surface-container-high transition-all duration-500 relative overflow-hidden flex flex-col h-full border border-white/5 hover:border-white/10 shadow-xl hover:shadow-2xl",
-        className
+        className,
       )}
     >
       {/* Background Icon Accent */}
       <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-all duration-500 group-hover:scale-110 pointer-events-none">
         <span className="material-symbols-outlined text-8xl">
-          {category.toLowerCase().includes("meat") ? "local_grocery_store" : 
-           category.toLowerCase().includes("bakery") ? "restaurant" : 
-           category.toLowerCase().includes("wine") ? "wine_bar" : "spa"}
+          {category.toLowerCase().includes("meat")
+            ? "local_grocery_store"
+            : category.toLowerCase().includes("bakery")
+              ? "restaurant"
+              : category.toLowerCase().includes("wine")
+                ? "wine_bar"
+                : "spa"}
         </span>
       </div>
 
@@ -83,34 +81,37 @@ export const CollectionCard = ({
       {/* Items Preview (Desktop List Style) */}
       <div className="space-y-4 mb-8 flex-1">
         {items.slice(0, 3).map((item) => (
-          <div key={item.id} className="flex items-center justify-between text-sm group/item">
+          <div
+            key={item.id || Math.random()}
+            className="flex items-center justify-between text-sm group/item"
+          >
             <div className="flex items-center gap-3">
-              <span className={cn("material-symbols-outlined text-lg opacity-80", accentColors[variant])}>
-                {item.icon}
+              <span
+                className={cn(
+                  "material-symbols-outlined text-lg opacity-80",
+                  accentColors[variant],
+                )}
+              >
+                shopping_cart
               </span>
               <span className="text-on-surface/70 group-hover/item:text-on-surface transition-colors">
                 {item.name}
               </span>
             </div>
             <span className="text-[11px] font-bold text-on-surface-variant/60 uppercase tracking-widest">
-              {item.quantity}
+              {item.quantity} {item.unit}
             </span>
           </div>
         ))}
-
-        {/* For Mobile/Compact consistency - show avatars if many items */}
-        {items.length > 3 && (
-          <div className="pt-2">
-            <AvatarStack images={previews} remainingCount={totalItems - 3} />
-          </div>
-        )}
       </div>
 
       {/* Progress Section */}
       <div className="space-y-3 mb-8">
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-black text-on-surface-variant tracking-[0.2em] uppercase">
-            {isCompleted ? "Despensa Completa" : `${securedItems} de ${totalItems} obtidos`}
+            {isCompleted
+              ? "Despensa Completa"
+              : `${securedItems} de ${totalItems} obtidos`}
           </span>
           <span className={cn("text-xs font-black", accentColors[variant])}>
             {isCompleted ? "CONCLUÍDO" : `${Math.round(progress)}%`}
@@ -123,7 +124,9 @@ export const CollectionCard = ({
       <div className="flex items-center justify-between mt-auto pt-6 border-t border-outline-variant/10">
         <div className="text-[10px] text-on-surface-variant/80 font-bold">
           <span className="block uppercase tracking-wider">Modificado</span>
-          <span className="block uppercase tracking-widest text-on-surface-variant">{lastModified}</span>
+          <span className="block uppercase tracking-widest text-on-surface-variant">
+            {formatRelativeTime(lastModified)}
+          </span>
         </div>
         <Button
           variant="secondary"
