@@ -17,10 +17,10 @@ export const RegisterProductForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex mb-8 flex-col gap-6 bg-surface-container-high/30 p-8 rounded-[32px] border border-white/5 shadow-inner"
+      className="flex mb-8 flex-col gap-6 bg-surface-container-high/30 p-4 sm:p-8 rounded-2xl sm:rounded-[32px] border border-white/5 shadow-inner"
     >
       <div className="flex flex-col gap-6">
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-col md:flex-row gap-4">
           <InputWithLabel
             control={control}
             name="item"
@@ -37,7 +37,7 @@ export const RegisterProductForm = () => {
             error={errors.marketName?.message}
           />
         </div>
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-col md:flex-row gap-4">
           <InputWithLabel
             control={control}
             name="price"

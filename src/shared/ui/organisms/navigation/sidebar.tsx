@@ -7,11 +7,7 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS = [{ label: "Despensa", icon: "inventory_2", href: "/" }];
 
-interface SidebarProps {
-  onOpenCreateList: () => void;
-}
-
-export const Sidebar = ({ onOpenCreateList }: SidebarProps) => {
+export const Sidebar = () => {
   const pathname = usePathname();
 
   return (
@@ -58,19 +54,6 @@ export const Sidebar = ({ onOpenCreateList }: SidebarProps) => {
           );
         })}
       </nav>
-
-      {/* Sidebar Footer with Create Button */}
-      <div className="pt-8 border-t border-outline-variant/10">
-        <button
-          onClick={onOpenCreateList}
-          className="w-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 rounded-2xl py-4 px-6 font-black uppercase text-[10px] tracking-[0.2em] transition-all active:scale-[0.98] group flex items-center justify-center gap-3"
-        >
-          <span className="material-symbols-outlined text-xl group-hover:rotate-90 transition-transform">
-            add
-          </span>
-          Nova Lista
-        </button>
-      </div>
     </aside>
   );
 };
