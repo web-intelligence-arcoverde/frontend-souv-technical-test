@@ -13,80 +13,82 @@ import { SkeletonCardShoppingList } from "@/shared/ui/molecules/skeleton-card-sh
 const ITEMS_PER_PAGE = 6;
 
 export const CollectionsGrid = () => {
-	const router = useRouter();
-	const [page, setPage] = useState(1);
-	const {
-		data: lists,
-		isLoading,
-		error,
-	} = useGetShoppingLists(page, ITEMS_PER_PAGE);
+  const router = useRouter();
+  const [page, setPage] = useState(1);
+  const {
+    data: lists,
+    isLoading,
+    error,
+  } = useGetShoppingLists(page, ITEMS_PER_PAGE);
 
-	const isEmptyShoppingList = !lists || lists.length === 0;
-	const isLastPage = lists && lists.length < ITEMS_PER_PAGE;
+  console.log("listas", lists);
 
-	const handleOpenList = (id: string) => {
-		router.push(`/products?listId=${id}`);
-	};
+  const isEmptyShoppingList = !lists || lists.length === 0;
+  const isLastPage = lists && lists.length < ITEMS_PER_PAGE;
 
-	const handleNextPage = () => {
-		if (!isLastPage) setPage((prev) => prev + 1);
-	};
+  const handleOpenList = (id: string) => {
+    router.push(`/products?listId=${id}`);
+  };
 
-	const handlePrevPage = () => {
-		if (page > 1) setPage((prev) => prev - 1);
-	};
+  const handleNextPage = () => {
+    if (!isLastPage) setPage((prev) => prev + 1);
+  };
 
-	if (isLoading) {
-		return <SkeletonCardShoppingList />;
-	}
+  const handlePrevPage = () => {
+    if (page > 1) setPage((prev) => prev - 1);
+  };
 
-	if (error) {
-		return <ErrorCardShoppingList />;
-	}
+  if (isLoading) {
+    return <SkeletonCardShoppingList />;
+  }
 
-	if (isEmptyShoppingList && page === 1) {
-		return <EmptyShoppingList />;
-	}
+  if (error) {
+    return <ErrorCardShoppingList />;
+  }
 
-	return (
-		<div className="flex flex-col gap-8">
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-				{lists?.map((list) => (
-					<CollectionCard
-						key={list.id}
-						{...list}
-						onOpen={() => handleOpenList(list.id)}
-					/>
-				))}
-			</div>
+  if (isEmptyShoppingList && page === 1) {
+    return <EmptyShoppingList />;
+  }
 
-			{!isEmptyShoppingList && (
-				<div className="flex items-center justify-center gap-4 py-8 border-t border-white/10 mt-4">
-					<Button
-						variant="ghost"
-						onClick={handlePrevPage}
-						disabled={page === 1}
-						className="flex items-center gap-2 text-white/70 hover:text-white hover:bg-white/10 transition-all disabled:opacity-30"
-					>
-						<ChevronLeft className="w-4 h-4" />
-						Anterior
-					</Button>
+  return (
+    <div className="flex flex-col gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+        {lists?.map((list) => (
+          <CollectionCard
+            key={list.id}
+            {...list}
+            onOpen={() => handleOpenList(list.id)}
+          />
+        ))}
+      </div>
 
-					<span className="text-white font-medium px-4 py-2 bg-white/5 rounded-full border border-white/10 min-w-[100px] text-center">
-						Página {page}
-					</span>
+      {!isEmptyShoppingList && (
+        <div className="flex items-center justify-center gap-4 py-8 border-t border-white/10 mt-4">
+          <Button
+            variant="ghost"
+            onClick={handlePrevPage}
+            disabled={page === 1}
+            className="flex items-center gap-2 text-white/70 hover:text-white hover:bg-white/10 transition-all disabled:opacity-30"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Anterior
+          </Button>
 
-					<Button
-						variant="ghost"
-						onClick={handleNextPage}
-						disabled={isLastPage}
-						className="flex items-center gap-2 text-white/70 hover:text-white hover:bg-white/10 transition-all disabled:opacity-30"
-					>
-						Próximo
-						<ChevronRight className="w-4 h-4" />
-					</Button>
-				</div>
-			)}
-		</div>
-	);
+          <span className="text-white font-medium px-4 py-2 bg-white/5 rounded-full border border-white/10 min-w-[100px] text-center">
+            Página {page}
+          </span>
+
+          <Button
+            variant="ghost"
+            onClick={handleNextPage}
+            disabled={isLastPage}
+            className="flex items-center gap-2 text-white/70 hover:text-white hover:bg-white/10 transition-all disabled:opacity-30"
+          >
+            Próximo
+            <ChevronRight className="w-4 h-4" />
+          </Button>
+        </div>
+      )}
+    </div>
+  );
 };

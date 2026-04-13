@@ -6,21 +6,21 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 export function createProxyHandler(targetModule: string) {
 	return async (
 		req: NextRequest,
-		{ params }: { params: { path: string[] } },
+		{ params }: { params: Promise<{ path?: string[] }> },
 	) => {
-		const { path } = params;
-		const targetPath = path.join("/");
+		const { path = [] } = await params;
+		const targetPath = (path || []).join("/");
 		const method = req.method;
 
 		// 1. Extrai o token do cookie HttpOnly
 		const tokenCookie = req.cookies.get("token")?.value;
 
-		// biome-ignore lint/suspicious/noExplicitAny: Standard body type
-		let body: any = undefined;
+		// Standard body type
+		let body: unknown = undefined;
 		if (!["GET", "HEAD", "DELETE"].includes(method)) {
 			try {
 				body = await req.json();
-			} catch (e) {
+			} catch {
 				body = undefined;
 			}
 		}
@@ -50,7 +50,7 @@ export function createProxyHandler(targetModule: string) {
 			});
 
 			const resData = response.data;
-			
+
 			// 3. Verifica se é uma rota de autenticação que emite tokens
 			const isAuthRoute = targetModule === "auth";
 			const isLoginOrRegister = isAuthRoute && (targetPath === "login" || targetPath === "register");
@@ -103,7 +103,11 @@ export function createProxyHandler(targetModule: string) {
 				};
 				return NextResponse.json(data, { status });
 			}
-			console.error(`[BFF Proxy Error] ${method} ${targetModule}/${targetPath}:`, error);
+			const errorData = axios.isAxiosError(error) ? error.response?.data : null;
+			console.error(`[BFF Proxy Error] ${method} ${targetModule}/${targetPath}:`, {
+				message: error instanceof Error ? error.message : String(error),
+				backendResponse: errorData,
+			});
 			return NextResponse.json(
 				{ message: "Internal Server Error" },
 				{ status: 500 },

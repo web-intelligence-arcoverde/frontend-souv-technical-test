@@ -2,12 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useSnapshot } from "valtio";
+import { useQueryClient } from "@tanstack/react-query";
 import { AuthService } from "@/services/auth.service";
 import { authActions, authState } from "@/store/auth";
 
 export const useAuth = () => {
 	const snap = useSnapshot(authState);
 	const router = useRouter();
+	const queryClient = useQueryClient();
 
 	const login = async (email: string, password: string) => {
 		try {
@@ -40,11 +42,13 @@ export const useAuth = () => {
 	const logout = async () => {
 		try {
 			await AuthService.logout();
+			queryClient.clear();
 			authActions.logout();
 			router.push("/login");
 		} catch (error) {
 			console.error("Logout failed:", error);
 			// Force logout anyway
+			queryClient.clear();
 			authActions.logout();
 			router.push("/login");
 		}
