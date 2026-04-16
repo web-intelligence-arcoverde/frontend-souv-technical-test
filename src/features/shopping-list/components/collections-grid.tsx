@@ -2,13 +2,13 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useGetShoppingLists } from "@/hooks/use-get-shopping-lists";
+import { useGetShoppingLists } from "../hooks/use-get-shopping-lists";
 import { CollectionCard } from "@/shared/ui/molecules/collection-card/collection-card";
-import { EmptyShoppingList } from "@/shared/ui/molecules/empty-shopping-list/empty-shopping-list";
-import { ErrorCardShoppingList } from "@/shared/ui/molecules/error-card-shopping-list/error-card-shopping-list";
-import { SkeletonCardShoppingList } from "@/shared/ui/molecules/skeleton-card-shopping-list/skeleton-card-shopping-list";
+import { EmptyShoppingList } from "../ui/empty-list/empty-shopping-list";
+import { ErrorCardShoppingList } from "../ui/error-card/error-card-shopping-list";
+import { SkeletonCardShoppingList } from "../ui/skeleton-card/skeleton-card-shopping-list";
 
 const ITEMS_PER_PAGE = 6;
 

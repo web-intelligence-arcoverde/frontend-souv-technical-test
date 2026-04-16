@@ -1,5 +1,5 @@
 import type React from "react";
-import { useDeleteShoppingList } from "@/hooks/use-delete-shopping-list";
+import { useDeleteShoppingList } from "@/features/shopping-list";
 import { useToast } from "@/hooks/use-toast";
 import { formatRelativeTime } from "@/lib/date-utils";
 import { cn } from "@/lib/utils";

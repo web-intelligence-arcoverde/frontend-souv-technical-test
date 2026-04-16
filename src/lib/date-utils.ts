@@ -1,4 +1,4 @@
-import type { FirestoreTimestamp } from "@/types/shopping-list";
+import type { FirestoreTimestamp } from "@/features/shopping-list";
 
 export function formatRelativeTime(timestamp: FirestoreTimestamp): string {
 	if (!timestamp) return "N/A";

@@ -1,6 +1,6 @@
 import api from "@/shared/api/axios";
 import type { ProductProps } from "@/types/product";
-import type { IShoppingList } from "@/types/shopping-list";
+import type { IShoppingList } from "../types/shopping-list";
 
 const API_BASE_URL = "/shopping-list";
 

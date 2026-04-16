@@ -1,5 +1,5 @@
 import React from "react";
-import { CollectionsGrid } from "@/features/shopping-list/components/collections-grid";
+import { CollectionsGrid } from "@/features/shopping-list";
 import { AppShell } from "@/shared/ui/templates/app-shell/app-shell";
 
 export const DashboardView = () => {

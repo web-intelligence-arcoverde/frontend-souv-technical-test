@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import React from "react";
-import { useGetPublicShoppingList } from "@/hooks/use-get-public-shopping-list";
+import { useGetPublicShoppingList } from "@/features/shopping-list";
 import { Badge } from "@/shared/ui/atoms/badge/badge";
 import type { ItemProps } from "@/shared/ui/molecules/product-item/product-item";
 import { ProductItemList } from "@/shared/ui/organisms/product-item-list/product-item-list";

@@ -3,7 +3,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ProductService } from "@/services/product";
 import type { ProductProps } from "@/types/product";
-import type { IShoppingList } from "@/types/shopping-list";
+import type { IShoppingList } from "@/features/shopping-list";
 import {
   SHOPPING_LIST_DETAIL_QUERY,
   SHOPPING_LIST_QUERY,

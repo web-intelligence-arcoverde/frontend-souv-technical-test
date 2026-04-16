@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ShoppingListService } from "@/services/shopping-list";
+import { ShoppingListService } from "../api/shopping-list.service";
 
 export const useGetShoppingListDetail = (id: string | null) => {
 	return useQuery({

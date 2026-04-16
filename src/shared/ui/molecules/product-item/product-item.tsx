@@ -6,9 +6,11 @@ import { CategoryTag } from "../category-tag/category-tag";
 import { ActionMenuProduct } from "./action-menu-product";
 import { ProductProps } from "@/types/product";
 
-interface ProductItemProps extends ProductProps {
+export interface ProductItemProps extends ProductProps {
   toggleItemChecked: (id: string) => void;
 }
+
+export type ItemProps = ProductItemProps;
 
 export const ProductItem = ({
   id,

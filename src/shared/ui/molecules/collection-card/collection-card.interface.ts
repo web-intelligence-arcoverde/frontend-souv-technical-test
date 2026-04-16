@@ -1,5 +1,5 @@
 import type { ProductProps } from "@/types/product";
-import type { FirestoreTimestamp } from "@/types/shopping-list";
+import type { FirestoreTimestamp } from "@/features/shopping-list";
 
 export interface CollectionCardProps {
 	id: string;

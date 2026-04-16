@@ -5,7 +5,7 @@ import { ProductItem } from "../../molecules/product-item/product-item";
 import { useSearchParams } from "next/navigation";
 
 import { ProductProps } from "@/types/product";
-import { useGetShoppingListDetail } from "@/hooks/use-get-shopping-list-detail";
+import { useGetShoppingListDetail } from "@/features/shopping-list";
 import { useUpdateProductChecked } from "@/hooks/use-update-checked-product";
 
 const sortProducts = (products: ProductProps[]): ProductProps[] => {

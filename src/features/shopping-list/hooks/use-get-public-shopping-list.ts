@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { ShoppingListService } from "@/services/shopping-list";
+import { ShoppingListService } from "../api/shopping-list.service";
 
 export const useGetPublicShoppingList = (id: string) => {
 	return useQuery({

@@ -2,12 +2,18 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useShoppingList } from "@/app/providers/shopping-list-provider";
+import { useSearchParams } from "next/navigation";
+import { useCreateProduct } from "@/hooks/use-create-product";
+import { useToast } from "@/hooks/use-toast";
 import { formSchema } from "./register-product-form.schema";
 import type { FormValues } from "./register-product-form.type";
+import { ProductProps } from "@/types/product";
 
 export const useRegisterProduct = () => {
-  const { addItem } = useShoppingList();
+  const searchParams = useSearchParams();
+  const listId = searchParams.get("listId");
+  const { mutate: createProduct } = useCreateProduct();
+  const { toast } = useToast();
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -29,14 +35,36 @@ export const useRegisterProduct = () => {
   } = methods;
 
   const onSubmit = (data: FormValues) => {
-    addItem({
-      name: data.item,
-      marketName: data.marketName,
-      price: data.price,
-      quantity: data.quantity.quantity,
-      unit: data.quantity.unit,
-      category: data.category,
-    });
+    if (!listId) return;
+
+    createProduct(
+      {
+        name: data.item,
+        marketName: data.marketName || "Mercado Principal",
+        price: data.price || 0,
+        quantity: data.quantity.quantity || 1,
+        unit: data.quantity.unit || "un",
+        category: data.category || "Geral",
+        listId,
+        checked: false,
+      } as ProductProps & { listId: string },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Produto Adicionado!",
+            description: `${data.item} foi colocado na sua lista.`,
+            variant: "success",
+          });
+        },
+        onError: () => {
+          toast({
+            title: "Erro ao adicionar",
+            description: "Não foi possível adicionar o produto agora.",
+            variant: "destructive",
+          });
+        },
+      },
+    );
 
     reset({
       item: "",

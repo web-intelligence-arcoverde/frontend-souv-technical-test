@@ -1,68 +1,23 @@
-"use client";
-
-import { zodResolver } from "@hookform/resolvers/zod";
 import * as Dialog from "@radix-ui/react-dialog";
-import React from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { useCreateShoppingList } from "@/hooks/use-create-shopping-list";
-import { useToast } from "@/hooks/use-toast";
+import { useCreateListModal } from "../hooks/use-create-list-modal";
 import { cn } from "@/lib/utils";
-import { SHOPPING_LIST_TYPES } from "@/shared/constants/shopping-list-types";
+import { SHOPPING_LIST_TYPES } from "../constants/shopping-list-types";
 import { InputWithLabel } from "@/shared/ui/molecules/Input/Input";
 import { TextareaWithLabel } from "@/shared/ui/molecules/Textarea/Textarea";
 import { ThemeSelector } from "@/shared/ui/molecules/theme-selector/theme-selector";
-import {
-  type CreateListFormValues,
-  createListSchema,
-} from "../schemas/create-list-schema";
 import type { CreateListModalProps } from "../types/create-list-modal";
 
 export const CreateListModal = ({
   isOpen,
   onOpenChange,
 }: CreateListModalProps) => {
-  const { mutate: createList, isPending } = useCreateShoppingList();
-  const { toast } = useToast();
-
-  const {
-    handleSubmit,
-    control,
-    formState: { errors },
-    reset,
-  } = useForm<CreateListFormValues>({
-    resolver: zodResolver(createListSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      category: "",
-      shared: false,
-    },
+  const { control, onSubmit, isPending, errors } = useCreateListModal({
+    onOpenChange,
   });
-
-  const onSubmit = (data: CreateListFormValues) => {
-    createList(data, {
-      onSuccess: () => {
-        toast({
-          title: "Sucesso!",
-          description: "Sua nova lista foi criada com sucesso.",
-          variant: "success",
-        });
-        onOpenChange(false);
-        reset();
-      },
-      onError: () => {
-        toast({
-          title: "Erro ao criar lista",
-          description:
-            "Ocorreu um problema ao tentar criar sua lista. Tente novamente.",
-          variant: "destructive",
-        });
-      },
-    });
-  };
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
@@ -96,7 +51,7 @@ export const CreateListModal = ({
             </Dialog.Close>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={onSubmit} className="space-y-6">
             <InputWithLabel
               control={control}
               name="title"

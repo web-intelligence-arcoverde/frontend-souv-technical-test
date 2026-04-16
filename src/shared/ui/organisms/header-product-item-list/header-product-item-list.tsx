@@ -1,11 +1,11 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useShoppingList } from "@/app/providers/use-shopping-list";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useGetShoppingListDetail } from "@/features/shopping-list";
 
 export const HeaderProductItemList = () => {
 	const router = useRouter();
-	const { list } = useShoppingList();
+	const searchParams = useSearchParams();
+	const listId = searchParams.get("listId");
+	const { data: list } = useGetShoppingListDetail(listId);
 
 	return (
 		<header className="mb-14">

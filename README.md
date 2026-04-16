@@ -81,3 +81,5 @@ yarn test
 ## 📄 Licença
 
 Este projeto está licenciado sob a [MIT License](LICENSE).
+
+embrando que hooks, services e informações mais exclusivas da feature tem que vim para a pasta equivalente

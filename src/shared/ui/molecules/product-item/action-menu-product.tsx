@@ -1,6 +1,8 @@
 import { MoreVertical, Trash2 } from "lucide-react";
-import React, { useContext, useState } from "react";
-import { ShoppingListContext } from "@/app/providers/shopping-list-provider";
+import React, { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useDeleteProduct } from "@/hooks/use-delete-product";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 
 interface ActionMenuProductProps {
@@ -8,14 +10,27 @@ interface ActionMenuProductProps {
 }
 
 export const ActionMenuProduct = ({ id }: ActionMenuProductProps) => {
-  const context = useContext(ShoppingListContext);
+  const searchParams = useSearchParams();
+  const listId = searchParams.get("listId");
+  const { mutate: deleteProduct } = useDeleteProduct();
+  const { toast } = useToast();
   const [isVisible, setIsVisible] = useState(false);
 
   const handleDelete = () => {
-    if (context) {
-      context.deleteItem(id);
-      setIsVisible(false);
-    }
+    if (!listId) return;
+
+    deleteProduct(
+      { id, listId },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Item Removido",
+            description: "O produto foi retirado da sua lista.",
+          });
+          setIsVisible(false);
+        },
+      },
+    );
   };
 
   return (
