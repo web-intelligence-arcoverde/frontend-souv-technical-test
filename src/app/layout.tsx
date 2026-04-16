@@ -5,44 +5,44 @@ import { QueryProvider } from "./providers/query-provider";
 import "./globals.css";
 
 const inter = Inter({
-	subsets: ["latin"],
+  subsets: ["latin"],
 });
 
 const plusJakartaSans = Plus_Jakarta_Sans({
-	subsets: ["latin"],
-	variable: "--font-jakarta",
+  subsets: ["latin"],
+  variable: "--font-jakarta",
 });
 
 export const metadata: Metadata = {
-	title: "Shopping List",
-	description: "Shopping List",
+  title: "Shopping List",
+  description: "Shopping List",
 };
 
 import { Toaster } from "@/components/ui/toaster";
 import { AuthInitializer } from "./providers/auth-initializer";
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	return (
-		<html lang="en" className="dark">
-			<head>
-				<link
-					rel="stylesheet"
-					href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-				/>
-			</head>
-			<body
-				className={`${inter.className} ${plusJakartaSans.variable} antialiased bg-background text-on-surface`}
-			>
-				<QueryProvider>
-					<AuthInitializer />
-					{children}
-					<Toaster />
-				</QueryProvider>
-			</body>
-		</html>
-	);
+  return (
+    <html lang="en" className="dark">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        />
+      </head>
+      <body
+        className={`${inter.className} ${plusJakartaSans.variable} antialiased bg-background text-on-surface`}
+      >
+        <QueryProvider>
+          <AuthInitializer />
+          {children}
+          <Toaster />
+        </QueryProvider>
+      </body>
+    </html>
+  );
 }

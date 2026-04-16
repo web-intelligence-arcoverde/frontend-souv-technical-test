@@ -17,4 +17,4 @@ const useRouter = () => ({
   isFallback: false,
 });
 
-export { useRouter };
+module.exports = { useRouter };

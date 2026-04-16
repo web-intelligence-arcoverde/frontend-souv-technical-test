@@ -6,7 +6,7 @@ Este documento fornece uma visão detalhada da arquitetura, padrões e tecnologi
 
 O projeto foi construído com as tecnologias mais recentes do ecossistema React:
 
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Framework**: [Next.js 16.2.3](https://nextjs.org/) (App Router)
 - **Linguagem**: [TypeScript](https://www.typescriptlang.org/)
 - **Estilização**: [Tailwind CSS 4+](https://tailwindcss.com/) + [Radix UI](https://www.radix-ui.com/)
 - **Gerenciamento de Estado**:
@@ -67,6 +67,29 @@ Os componentes básicos (`src/shared/ui`) seguem a hierarquia:
 - **Fetching**: Utiliza `useQuery` para obter dados das listas e produtos.
 - **Mutations**: Utiliza `useMutation` para criação/edição.
 - **Optimistic UI**: Implementado em fluxos críticos para garantir que a interface responda instantaneamente antes mesmo da confirmação do servidor.
+
+---
+
+## 🧪 Camada de Testes
+
+Para garantir a estabilidade durante e após a migração, deve-se seguir esta estratégia de testes:
+
+### 1. Testes Unitários
+Focam na lógica isolada e componentes de baixo nível.
+- **Onde**: Ao lado do arquivo original ou em pastas `__tests__`.
+- **Alvos**:
+  - **Atoms e Molecules**: Validar renderização e estados básicos (ex: `Button`, `Input`).
+  - **Utils**: Validar funções de formatação e lógica pura.
+  - **Services**: Mockar chamadas de API (Axios) para testar o tratamento de dados.
+- **Comando**: `npm run test`
+
+### 2. Testes de Integração
+Focam na interação entre componentes e gerenciamento de estado.
+- **Alvos**:
+  - **Features**: Validar fluxos completos (ex: submissão de formulário de login).
+  - **Organisms**: Validar componentes complexos que interagem com o estado global (Valtio) ou cache (React Query).
+  - **Fluxos de CRUD**: Testar a criação de listas e adição de produtos, garantindo que o cache seja atualizado corretamente.
+- **Dica**: Use o MSW (Mock Service Worker) para interceptar requisições de rede durante os testes de integração.
 
 ---
 

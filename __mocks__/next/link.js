@@ -1,9 +1,7 @@
+const React = require("react");
+
 const Link = ({ children, href, ...props }) => {
-  return (
-    <a href={href} {...props}>
-      {children}
-    </a>
-  );
+  return React.createElement("a", { href, ...props }, children);
 };
 
-export default Link;
+module.exports = Link;

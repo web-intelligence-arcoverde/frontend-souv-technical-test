@@ -1,5 +1,7 @@
+const React = require("react");
+
 const Image = ({ src, alt, ...props }) => {
-  return <img src={src} alt={alt} {...props} />;
+  return React.createElement("img", { src, alt, ...props });
 };
 
-export default Image;
+module.exports = Image;

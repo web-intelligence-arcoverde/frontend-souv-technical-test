@@ -1,77 +1,89 @@
 "use client";
 
 import { EmptyList } from "../../molecules/empty-list/empty-list";
-import {
-	type ItemProps,
-	ProductItem,
-} from "../../molecules/product-item/product-item";
+import { ProductItem } from "../../molecules/product-item/product-item";
+import { useSearchParams } from "next/navigation";
 
-import { PaginationProductList } from "../pagination/pagination";
+import { ProductProps } from "@/types/product";
+import { useGetShoppingListDetail } from "@/hooks/use-get-shopping-list-detail";
+import { useUpdateProductChecked } from "@/hooks/use-update-checked-product";
 
-const sortProducts = (products: ItemProps[]): ItemProps[] => {
-	return [...products].sort((a, b) => Number(a.checked) - Number(b.checked));
+const sortProducts = (products: ProductProps[]): ProductProps[] => {
+  return [...products].sort((a, b) => Number(a.checked) - Number(b.checked));
 };
 
-interface PaginatedProducts {
-	data: ItemProps[];
-	currentPage: number;
-	totalPages: number;
-}
+export const ProductItemList = () => {
+  const searchParams = useSearchParams();
 
-export const ProductItemList = ({
-	products,
-	isLoading,
-	handleNextPage,
-	handlePreviuesPage,
-	isReadOnly = false,
-}: {
-	products: ItemProps[] | PaginatedProducts;
-	isLoading: boolean;
-	handleNextPage: () => void;
-	handlePreviuesPage: () => void;
-	isReadOnly?: boolean;
-}) => {
-	if (isLoading) {
-		return (
-			<div className="flex flex-col items-center justify-center py-20 gap-4">
-				<div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-				<p className="text-primary font-bold animate-pulse uppercase tracking-[0.2em] text-[10px]">
-					Carregando Curadoria...
-				</p>
-			</div>
-		);
-	}
+  const listId = searchParams.get("listId");
 
-	const productData = Array.isArray(products) ? products : products.data;
-	const currentPage = Array.isArray(products) ? 1 : products.currentPage;
+  const { data, isLoading, isError } = useGetShoppingListDetail(listId);
 
-	if (!productData || productData.length === 0) {
-		return <EmptyList />;
-	}
+  const updateProductCheckedMutation = useUpdateProductChecked();
 
-	const sortedProducts = sortProducts(productData);
+  const toggleItemChecked = (id: string) => {
+    if (!listId || !data) return;
+    const findProduct = data.items.find((item: ProductProps) => item.id === id);
+    if (!findProduct) return;
 
-	return (
-		<div className="flex flex-col gap-6 w-full items-center">
-			<div className="w-full grid grid-cols-1 gap-4">
-				{sortedProducts.map((item) => (
-					<ProductItem
-						key={`${item.id}-${item.name}`}
-						{...item}
-						isReadOnly={isReadOnly}
-					/>
-				))}
-			</div>
+    updateProductCheckedMutation.mutate({
+      id,
+      listId,
+      checked: !findProduct.checked,
+    });
+  };
 
-			{!isReadOnly && (
-				<div className="mt-8 pt-8 border-t border-white/5 w-full">
-					<PaginationProductList
-						currentPage={currentPage}
-						handleNextPage={handleNextPage}
-						handlePreviuesPage={handlePreviuesPage}
-					/>
-				</div>
-			)}
-		</div>
-	);
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-4">
+        <p className="text-primary font-bold animate-pulse uppercase tracking-[0.2em] text-[10px]">
+          Erro ao carregar produtos
+        </p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-4">
+        <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+        <p className="text-primary font-bold animate-pulse uppercase tracking-[0.2em] text-[10px]">
+          Carregando Curadoria...
+        </p>
+      </div>
+    );
+  }
+
+  const productData =
+    data?.items && Array.isArray(data.items) ? data.items : [];
+
+  if (!productData || productData.length === 0) {
+    return <EmptyList />;
+  }
+
+  const sortedProducts = sortProducts(productData);
+
+  return (
+    <div className="flex flex-col gap-6 w-full items-center">
+      <div className="w-full grid grid-cols-1 gap-4">
+        {sortedProducts.map((item) => (
+          <ProductItem
+            key={`${item.id}-${item.name}`}
+            {...item}
+            toggleItemChecked={toggleItemChecked}
+          />
+        ))}
+      </div>
+
+      {/*!isReadOnly && (
+        <div className="mt-8 pt-8 border-t border-white/5 w-full">
+          <PaginationProductList
+            currentPage={currentPage}
+            handleNextPage={handleNextPage}
+            handlePreviuesPage={handlePreviuesPage}
+          />
+        </div>
+      )*/}
+    </div>
+  );
 };

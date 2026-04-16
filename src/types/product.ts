@@ -1,5 +1,5 @@
 export interface ProductProps {
-	id?: string;
+	id: string;
 	listId?: string;
 	category: string;
 	name: string;

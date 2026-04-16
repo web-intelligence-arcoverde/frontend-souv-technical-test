@@ -39,7 +39,7 @@ export const LoginForm = () => {
 
 	return (
 		<div className="glass-panel p-8 rounded-xl border border-outline-variant/10 shadow-2xl w-full">
-			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+			<form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
 				{serverError && (
 					<div className="p-3 bg-error-container/20 border border-error/50 text-error-dim text-xs rounded-lg font-bold">
 						{serverError}
