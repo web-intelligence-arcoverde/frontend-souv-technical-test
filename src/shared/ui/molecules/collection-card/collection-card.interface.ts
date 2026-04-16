@@ -13,4 +13,5 @@ export interface CollectionCardProps {
 	lastModified: FirestoreTimestamp;
 	onOpen?: () => void;
 	className?: string;
+	shared?: boolean;
 }

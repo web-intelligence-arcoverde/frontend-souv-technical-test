@@ -5,7 +5,14 @@ import { usePathname } from "next/navigation";
 import React from "react";
 import { cn } from "@/lib/utils";
 
-const NAV_ITEMS = [{ label: "Despensa", icon: "inventory_2", href: "/" }];
+const NAV_ITEMS = [
+  { label: "Despensa", icon: "inventory_2", href: "/" },
+  {
+    label: "Listas Compartilhadas",
+    icon: "shopping_cart",
+    href: "/shopping-list",
+  },
+];
 
 export const Sidebar = () => {
   const pathname = usePathname();

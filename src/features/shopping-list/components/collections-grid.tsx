@@ -15,16 +15,10 @@ const ITEMS_PER_PAGE = 6;
 export const CollectionsGrid = () => {
   const router = useRouter();
   const [page, setPage] = useState(1);
-  const {
-    data: lists,
-    isLoading,
-    error,
-  } = useGetShoppingLists(page, ITEMS_PER_PAGE);
+  const { data, isLoading, error } = useGetShoppingLists(page, ITEMS_PER_PAGE);
 
-  console.log("listas", lists);
-
-  const isEmptyShoppingList = !lists || lists.length === 0;
-  const isLastPage = lists && lists.length < ITEMS_PER_PAGE;
+  const isEmptyShoppingList = !data || data.length === 0;
+  const isLastPage = data && data.length < ITEMS_PER_PAGE;
 
   const handleOpenList = (id: string) => {
     router.push(`/products?listId=${id}`);
@@ -53,7 +47,7 @@ export const CollectionsGrid = () => {
   return (
     <div className="flex flex-col gap-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-        {lists?.map((list) => (
+        {data?.map((list) => (
           <CollectionCard
             key={list.id}
             {...list}

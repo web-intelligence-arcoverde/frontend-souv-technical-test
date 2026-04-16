@@ -3,8 +3,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as Dialog from "@radix-ui/react-dialog";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { useCreateShoppingList } from "@/hooks/use-create-shopping-list";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -36,6 +38,7 @@ export const CreateListModal = ({
       title: "",
       description: "",
       category: "",
+      shared: false,
     },
   });
 
@@ -117,6 +120,32 @@ export const CreateListModal = ({
               label="Selecione o Tema:"
               options={SHOPPING_LIST_TYPES}
               error={errors.category?.message}
+            />
+
+            <Controller
+              name="shared"
+              control={control}
+              render={({ field }) => (
+                <div className="flex items-center justify-between p-6 rounded-2xl bg-surface-container-low border border-white/5 transition-all hover:bg-surface-container-high group">
+                  <div className="flex flex-col gap-1">
+                    <Label
+                      htmlFor="shared"
+                      className="text-sm font-bold text-white cursor-pointer"
+                    >
+                      Compartilhar Lista
+                    </Label>
+                    <p className="text-[11px] text-on-surface-variant/60 font-medium">
+                      Permitir que outras pessoas visualizem esta lista
+                    </p>
+                  </div>
+                  <Checkbox
+                    id="shared"
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    className="w-6 h-6 border-2 border-outline-variant/30 rounded-lg data-[state=checked]:bg-primary data-[state=checked]:border-primary transition-all duration-300 shadow-lg shadow-primary/10"
+                  />
+                </div>
+              )}
             />
 
             <div className="pt-4">

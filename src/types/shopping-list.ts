@@ -15,6 +15,7 @@ export interface IShoppingList {
 	securedItems: number;
 	items: ProductProps[];
 	ownerId: string;
+	shared: boolean;
 	lastModified: FirestoreTimestamp;
 	createdAt: FirestoreTimestamp;
 }

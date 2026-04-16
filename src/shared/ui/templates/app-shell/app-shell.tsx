@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CreateListModal } from "@/features/collections/components/create-list-modal";
+import { CreateListModal } from "@/features/shopping-list/components/create-list-modal";
 import { BottomNav } from "@/shared/ui/organisms/navigation/bottom-nav";
 import { Sidebar } from "@/shared/ui/organisms/navigation/sidebar";
 import { TopNav } from "@/shared/ui/organisms/navigation/top-nav";

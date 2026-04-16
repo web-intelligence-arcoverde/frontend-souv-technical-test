@@ -6,6 +6,7 @@ export const createListSchema = z.object({
 		.string()
 		.min(3, "A descrição deve ter pelo menos 3 caracteres"),
 	category: z.string().min(1, "Selecione uma categoria"),
+	shared: z.boolean(),
 });
 
 export type CreateListFormValues = z.infer<typeof createListSchema>;

@@ -20,6 +20,7 @@ export const CollectionCard = ({
   lastModified,
   onOpen,
   className,
+  shared = false,
 }: CollectionCardProps) => {
   const { toast } = useToast();
   const { mutate: deleteList, isPending: isDeleting } = useDeleteShoppingList();
@@ -91,11 +92,21 @@ export const CollectionCard = ({
         <Button
           variant="ghost"
           size="icon"
-          onClick={handleShare}
+          onClick={() => console.log("edit")}
           className="rounded-full w-10 h-10 text-on-surface-variant hover:bg-error/10 hover:text-error transition-all "
         >
-          <span className="material-symbols-outlined text-xl">share</span>
+          <span className="material-symbols-outlined text-xl">edit</span>
         </Button>
+        {shared && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleShare}
+            className="rounded-full w-10 h-10 text-on-surface-variant hover:bg-error/10 hover:text-error transition-all "
+          >
+            <span className="material-symbols-outlined text-xl">share</span>
+          </Button>
+        )}
         <Button
           variant="ghost"
           size="icon"
