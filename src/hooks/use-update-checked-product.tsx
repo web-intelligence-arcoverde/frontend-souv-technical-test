@@ -17,8 +17,8 @@ export const useUpdateProductChecked = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, listId, checked }: MutationProps) => {
-      return ProductService.updateProductChecked(id, listId, checked);
+    mutationFn: ({ id, checked }: MutationProps) => {
+      return ProductService.updateProductChecked(id, checked);
     },
     onError: (error) => {
       console.error("Error:", error);

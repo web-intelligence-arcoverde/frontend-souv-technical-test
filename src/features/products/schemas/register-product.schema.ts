@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const formSchema = z.object({
+export const registerProductSchema = z.object({
 	item: z.string().min(2, "O nome do produto deve ter pelo menos 2 caracteres"),
 	marketName: z.string().min(2, "Informe o nome do mercado"),
 	price: z.coerce

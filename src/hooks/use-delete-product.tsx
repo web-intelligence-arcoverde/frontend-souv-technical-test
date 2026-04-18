@@ -16,8 +16,8 @@ export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, listId }: MutationProps) => {
-      return ProductService.deleteProduct(id, listId);
+    mutationFn: ({ id }: MutationProps) => {
+      return ProductService.deleteProduct(id);
     },
     onError: (error) => {
       console.error("Error:", error);

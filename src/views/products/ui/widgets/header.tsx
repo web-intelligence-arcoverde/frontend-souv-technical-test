@@ -1,7 +1,9 @@
+"use client";
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { useGetShoppingListDetail } from "@/features/shopping-list";
 
-export const HeaderProductItemList = () => {
+export const Header = () => {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const listId = searchParams.get("listId");

@@ -19,16 +19,15 @@ export const ProductService = {
 		return response.data;
 	},
 
-	async updateProductChecked(id: string, listId: string, checked: boolean) {
+	async updateProductChecked(id: string, checked: boolean) {
 		const response = await api.patch(`${API_BASE_URL}/${id}/toggle-checked`, {
 			checked,
-			listId,
 		});
 		return response.data;
 	},
 
-	async deleteProduct(id: string, listId: string) {
-		const response = await api.delete(`${API_BASE_URL}/${id}?listId=${listId}`);
+	async deleteProduct(id: string) {
+		const response = await api.delete(`${API_BASE_URL}/${id}`);
 		return response.data;
 	},
 };

@@ -4,8 +4,8 @@ import { useParams } from "next/navigation";
 import React from "react";
 import { useGetPublicShoppingList } from "@/features/shopping-list";
 import { Badge } from "@/shared/ui/atoms/badge/badge";
-import type { ItemProps } from "@/shared/ui/molecules/product-item/product-item";
-import { ProductItemList } from "@/shared/ui/organisms/product-item-list/product-item-list";
+import { ProductItemList } from "@/features/products";
+import { ProductProps } from "@/types/product";
 
 const SharedShoppingListPage = () => {
 	const params = useParams();
@@ -92,10 +92,8 @@ const SharedShoppingListPage = () => {
 							</h2>
 
 							<ProductItemList
-								products={(list?.items as unknown as ItemProps[]) || []}
+								products={(list?.items as unknown as ProductProps[]) || []}
 								isLoading={isLoading}
-								handleNextPage={() => {}}
-								handlePreviuesPage={() => {}}
 								isReadOnly={true}
 							/>
 						</div>

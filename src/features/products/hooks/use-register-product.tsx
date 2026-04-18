@@ -5,9 +5,9 @@ import { useForm } from "react-hook-form";
 import { useSearchParams } from "next/navigation";
 import { useCreateProduct } from "@/hooks/use-create-product";
 import { useToast } from "@/hooks/use-toast";
-import { formSchema } from "./register-product-form.schema";
-import type { FormValues } from "./register-product-form.type";
-import { ProductProps } from "@/types/product";
+import { registerProductSchema } from "../schemas/register-product.schema";
+import type { RegisterProductFormValues } from "../types/register-product.type";
+import type { ProductProps } from "@/types/product";
 
 export const useRegisterProduct = () => {
   const searchParams = useSearchParams();
@@ -15,8 +15,8 @@ export const useRegisterProduct = () => {
   const { mutate: createProduct } = useCreateProduct();
   const { toast } = useToast();
 
-  const methods = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  const methods = useForm<RegisterProductFormValues>({
+    resolver: zodResolver(registerProductSchema),
     mode: "onChange",
     defaultValues: {
       item: "",
@@ -34,7 +34,7 @@ export const useRegisterProduct = () => {
     reset,
   } = methods;
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = (data: RegisterProductFormValues) => {
     if (!listId) return;
 
     createProduct(

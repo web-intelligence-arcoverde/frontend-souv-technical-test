@@ -2,12 +2,13 @@
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import { CategoryTag } from "../category-tag/category-tag";
-import { ActionMenuProduct } from "./action-menu-product";
 import { ProductProps } from "@/types/product";
+import { CategoryTag } from "./category-tag";
+import { ActionMenuProduct } from "./action-menu-product";
 
 export interface ProductItemProps extends ProductProps {
-  toggleItemChecked: (id: string) => void;
+  toggleItemChecked?: (id: string) => void;
+  isReadOnly?: boolean;
 }
 
 export type ItemProps = ProductItemProps;
@@ -20,9 +21,10 @@ export const ProductItem = ({
   unit,
   checked,
   toggleItemChecked,
+  isReadOnly = false,
 }: ProductItemProps) => {
   const handleToggle = () => {
-    toggleItemChecked(id);
+    toggleItemChecked?.(id);
   };
 
   return (
@@ -36,7 +38,8 @@ export const ProductItem = ({
         <Checkbox
           checked={checked}
           onCheckedChange={handleToggle}
-          className="w-5 h-5 border-2 border-outline-variant/30 rounded-lg data-[state=checked]:bg-primary data-[state=checked]:border-primary transition-all duration-300"
+          disabled={isReadOnly}
+          className="w-5 h-5 border-2 border-outline-variant/30 rounded-lg data-[state=checked]:bg-primary data-[state=checked]:border-primary transition-all duration-300 disabled:opacity-50"
         />
         <div className="flex flex-col ml-6">
           <h4
@@ -54,7 +57,7 @@ export const ProductItem = ({
       </div>
       <div className="flex flex-row items-center gap-6">
         <CategoryTag category={category} />
-        {!checked && <ActionMenuProduct id={id} />}
+        {!checked && !isReadOnly && <ActionMenuProduct id={id} />}
       </div>
     </div>
   );

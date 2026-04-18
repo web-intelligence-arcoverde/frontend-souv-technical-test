@@ -3,11 +3,11 @@
 import { PlusIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CATEGORY_OPTIONS } from "@/shared/constants/categories";
-import { Button } from "../../atoms/Button/Button";
-import { InputWithLabel } from "../../molecules/Input/Input";
-import { SelectCategory } from "../../molecules/select-category/select-category";
-import { SelectQuantity } from "../../molecules/select-quantity/select-quantity";
-import { useRegisterProduct } from "./use-register-product";
+import { Button } from "@/shared/ui/atoms/Button/Button";
+import { InputWithLabel } from "@/shared/ui/molecules/Input/Input";
+import { SelectCategory } from "@/shared/ui/molecules/select-category/select-category";
+import { SelectQuantity } from "@/shared/ui/molecules/select-quantity/select-quantity";
+import { useRegisterProduct } from "../hooks/use-register-product";
 
 export const RegisterProductForm = () => {
   const { handleSubmit, onSubmit, control, errors, isValid } =
