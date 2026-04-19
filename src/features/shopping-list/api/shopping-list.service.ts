@@ -8,9 +8,12 @@ export const ShoppingListService = {
 	async getShoppingLists(
 		page?: number,
 		limit?: number,
+		shared?: boolean,
+		category?: string,
+		variant?: string,
 	): Promise<IShoppingList[]> {
 		const response = await api.get(API_BASE_URL, {
-			params: { page, limit },
+			params: { page, limit, shared, category, variant },
 		});
 		return response.data;
 	},

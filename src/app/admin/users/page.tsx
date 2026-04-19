@@ -3,7 +3,7 @@
 import { isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "@/features/auth";
 import api from "@/shared/api/axios";
 import { Header } from "@/shared/ui/organisms/header/header";
 

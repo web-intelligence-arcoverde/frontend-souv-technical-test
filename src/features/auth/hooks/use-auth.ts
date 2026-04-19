@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useSnapshot } from "valtio";
 import { useQueryClient } from "@tanstack/react-query";
-import { AuthService } from "@/services/auth.service";
+import { AuthService } from "../api/auth.service";
 import { authActions, authState } from "@/store/auth";
 
 export const useAuth = () => {

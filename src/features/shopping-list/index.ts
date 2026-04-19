@@ -7,3 +7,5 @@ export * from "./hooks/use-get-shopping-list-detail";
 export * from "./hooks/use-get-public-shopping-list";
 export * from "./types/shopping-list";
 export * from "./api/shopping-list.service";
+export * from "./components/filter-bar";
+export * from "./components/collections-grid";

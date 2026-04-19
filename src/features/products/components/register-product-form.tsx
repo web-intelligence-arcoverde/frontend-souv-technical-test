@@ -10,7 +10,7 @@ import { SelectQuantity } from "@/shared/ui/molecules/select-quantity/select-qua
 import { useRegisterProduct } from "../hooks/use-register-product";
 
 export const RegisterProductForm = () => {
-  const { handleSubmit, onSubmit, control, errors, isValid } =
+  const { handleSubmit, onSubmit, control, errors, isValid, isPending } =
     useRegisterProduct();
 
   return (
@@ -66,21 +66,27 @@ export const RegisterProductForm = () => {
       <div className="flex justify-end pt-2 border-t border-white/5">
         <Button
           type="submit"
-          disabled={!isValid}
+          disabled={!isValid || isPending}
           className={cn(
             "w-full md:w-auto mt-4 rounded-xl px-12 h-12 font-black uppercase text-[11px] tracking-[0.3em] transition-all",
-            isValid
+            isValid && !isPending
               ? "bg-primary hover:bg-primary-hover text-on-primary shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/40 active:scale-[0.98]"
               : "bg-surface-container-highest text-on-surface-variant/40 cursor-not-allowed opacity-50 border border-white/5",
           )}
         >
-          <PlusIcon
-            className={cn(
-              "w-5 h-5 mr-3 stroke-[3]",
-              isValid ? "animate-pulse" : "",
-            )}
-          />
-          Adicionar
+          {isPending ? (
+            <span className="material-symbols-outlined animate-spin mr-3">
+              sync
+            </span>
+          ) : (
+            <PlusIcon
+              className={cn(
+                "w-5 h-5 mr-3 stroke-[3]",
+                isValid ? "animate-pulse" : "",
+              )}
+            />
+          )}
+          {isPending ? "Adicionando..." : "Adicionar"}
         </Button>
       </div>
     </form>

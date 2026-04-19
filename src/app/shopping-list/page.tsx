@@ -3,10 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuth } from "@/features/auth";
-import { DashboardView } from "@/views/dashboard";
+import { ShoppingListView } from "@/views/shopping-list";
 import { FullPageLoader } from "@/shared/ui/molecules/full-page-loader";
 
-export default function Home() {
+export default function ShoppingListPage() {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
 
@@ -20,5 +20,5 @@ export default function Home() {
     return <FullPageLoader />;
   }
 
-  return <DashboardView />;
+  return <ShoppingListView />;
 }

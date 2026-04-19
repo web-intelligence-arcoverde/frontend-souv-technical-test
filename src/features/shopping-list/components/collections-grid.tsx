@@ -10,12 +10,26 @@ import { EmptyShoppingList } from "../ui/empty-list/empty-shopping-list";
 import { ErrorCardShoppingList } from "../ui/error-card/error-card-shopping-list";
 import { SkeletonCardShoppingList } from "../ui/skeleton-card/skeleton-card-shopping-list";
 
+interface CollectionsGridProps {
+  filters?: {
+    shared?: boolean;
+    category?: string;
+    variant?: string;
+  };
+}
+
 const ITEMS_PER_PAGE = 6;
 
-export const CollectionsGrid = () => {
+export const CollectionsGrid = ({ filters }: CollectionsGridProps) => {
   const router = useRouter();
   const [page, setPage] = useState(1);
-  const { data, isLoading, error } = useGetShoppingLists(page, ITEMS_PER_PAGE);
+  const { data, isLoading, error } = useGetShoppingLists(
+    page,
+    ITEMS_PER_PAGE,
+    filters?.shared,
+    filters?.category,
+    filters?.variant
+  );
 
   const isEmptyShoppingList = !data || data.length === 0;
   const isLastPage = data && data.length < ITEMS_PER_PAGE;

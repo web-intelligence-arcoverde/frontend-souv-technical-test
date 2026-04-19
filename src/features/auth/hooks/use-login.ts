@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "./use-auth";
 import type { LoginFormData } from "../schemas/login-schema";
 
 export const useLogin = () => {

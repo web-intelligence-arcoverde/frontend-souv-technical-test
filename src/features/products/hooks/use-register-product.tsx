@@ -12,7 +12,7 @@ import type { ProductProps } from "@/types/product";
 export const useRegisterProduct = () => {
   const searchParams = useSearchParams();
   const listId = searchParams.get("listId");
-  const { mutate: createProduct } = useCreateProduct();
+  const { mutate: createProduct, isPending } = useCreateProduct();
   const { toast } = useToast();
 
   const methods = useForm<RegisterProductFormValues>({
@@ -75,5 +75,5 @@ export const useRegisterProduct = () => {
     });
   };
 
-  return { onSubmit, control, handleSubmit, errors, isValid, isDirty };
+  return { onSubmit, control, handleSubmit, errors, isValid, isDirty, isPending };
 };

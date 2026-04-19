@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "./use-auth";
 import type { RegisterFormData } from "../schemas/register-schema";
 
 export const useRegister = () => {
